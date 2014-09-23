@@ -28,7 +28,8 @@ assign itype = cuif.instr;
 always_comb begin: CULogic
     //Initialization
     //Program Counter Signals
-    cuif.PCSrc1 = 0; cuif.PCSrc2 = 0; cuif.PCSrc3 = 0;
+    //cuif.PCSrc1 = 0; cuif.PCSrc2 = 0; cuif.PCSrc3 = 0;
+    cuif.pcsrc  = 0;
     cuif.immed  = 0; cuif.jaddr  = 0; cuif.jraddr = 0;
     //ALU Signal
     cuif.aluop  = ALU_ADD;
@@ -50,9 +51,8 @@ always_comb begin: CULogic
             cuif.rsel2  = itype.rt;
             cuif.WEN    = 0;
             //PC
-            cuif.PCSrc1 = cuif.zflag;
-            cuif.PCSrc2 = 0;
-            cuif.PCSrc3 = 0;
+            cuif.pcsrc[0] = cuif.zflag;
+            cuif.pcsrc[1] = 0;
             //ALU
             cuif.immed  = itype.imm;
             cuif.aluop  = ALU_SUB;
@@ -64,9 +64,8 @@ always_comb begin: CULogic
             cuif.rsel2  = itype.rt;
             cuif.WEN    = 0;
             //PC
-            cuif.PCSrc1 = ~cuif.zflag;
-            cuif.PCSrc2 = 0;
-            cuif.PCSrc3 = 0;
+            cuif.pcsrc[0] = ~cuif.zflag;
+            cuif.pcsrc[1] = 0;
             //ALU
             cuif.immed  = itype.imm;
             cuif.aluop  = ALU_SUB;
@@ -79,9 +78,7 @@ always_comb begin: CULogic
             cuif.wsel   = itype.rt;
             cuif.WEN    = 1;
             //PC
-            cuif.PCSrc1 = 0;
-            cuif.PCSrc2 = 0;
-            cuif.PCSrc3 = 0;
+
             //ALU
             cuif.immed  = itype.imm;
             cuif.extop  = 1;
@@ -96,9 +93,7 @@ always_comb begin: CULogic
             cuif.wsel   = itype.rt;
             cuif.WEN    = 1;
             //PC
-            cuif.PCSrc1 = 0;
-            cuif.PCSrc2 = 0;
-            cuif.PCSrc3 = 0;
+
             //ALU
             cuif.immed  = itype.imm;
             cuif.extop  = 1;
@@ -113,9 +108,7 @@ always_comb begin: CULogic
             cuif.wsel   = itype.rt;
             cuif.WEN    = 1;
             //PC
-            cuif.PCSrc1 = 0;
-            cuif.PCSrc2 = 0;
-            cuif.PCSrc3 = 0;
+
             //ALU
             cuif.immed  = itype.imm;
             cuif.extop  = 1;
@@ -130,9 +123,7 @@ always_comb begin: CULogic
             cuif.wsel   = itype.rt;
             cuif.WEN    = 1;
             //PC
-            cuif.PCSrc1 = 0;
-            cuif.PCSrc2 = 0;
-            cuif.PCSrc3 = 0;
+
             //ALU
             cuif.immed  = itype.imm;
             cuif.extop  = 0;
@@ -147,9 +138,7 @@ always_comb begin: CULogic
             cuif.wsel   = itype.rt;
             cuif.WEN    = 1;
             //PC
-            cuif.PCSrc1 = 0;
-            cuif.PCSrc2 = 0;
-            cuif.PCSrc3 = 0;
+
             //ALU
             cuif.immed  = itype.imm;
             cuif.extop  = 0;
@@ -164,9 +153,7 @@ always_comb begin: CULogic
             cuif.wsel   = itype.rt;
             cuif.WEN    = 1;
             //PC
-            cuif.PCSrc1 = 0;
-            cuif.PCSrc2 = 0;
-            cuif.PCSrc3 = 0;
+
             //ALU
             cuif.immed  = itype.imm;
             cuif.extop  = 0;
@@ -181,9 +168,7 @@ always_comb begin: CULogic
             cuif.wsel   = itype.rt;
             cuif.WEN    = 1;
             //PC
-            cuif.PCSrc1 = 0;
-            cuif.PCSrc2 = 0;
-            cuif.PCSrc3 = 0;
+
             //ALU
             cuif.immed  = itype.imm;
             cuif.extop  = 0;
@@ -198,9 +183,7 @@ always_comb begin: CULogic
             cuif.wsel   = itype.rt;
             cuif.WEN    = 1;
             //PC
-            cuif.PCSrc1 = 0;
-            cuif.PCSrc2 = 0;
-            cuif.PCSrc3 = 0;
+
             //ALU
             cuif.immed  = itype.imm;
             cuif.extop  = 2;
@@ -216,9 +199,7 @@ always_comb begin: CULogic
             cuif.wsel   = itype.rt;
             cuif.WEN    = 1;
             //PC
-            cuif.PCSrc1 = 0;
-            cuif.PCSrc2 = 0;
-            cuif.PCSrc3 = 0;
+
             //ALU
             cuif.immed  = itype.imm;
             cuif.extop  = 1;
@@ -234,9 +215,7 @@ always_comb begin: CULogic
             cuif.rsel2  = itype.rt;
             cuif.WEN    = 0;
             //PC
-            cuif.PCSrc1 = 0;
-            cuif.PCSrc2 = 0;
-            cuif.PCSrc3 = 0;
+
             //ALU
             cuif.immed  = itype.imm;
             cuif.extop  = 1;
@@ -247,15 +226,14 @@ always_comb begin: CULogic
         HALT : begin
             cuif.halt = 1;
         end
+        //J-type instructions
         J: begin
             cuif.irsel  = 0;
             cuif.memtoreg = 0;
             //Registers
             cuif.WEN    =  0;
             //PC
-            cuif.PCSrc1 = 0;
-            cuif.PCSrc2 = 1;
-            cuif.PCSrc3 = 0;
+            cuif.pcsrc = 2;
             //ALU
             cuif.aluop  = ALU_ADD;
             cuif.jaddr = jtype.addr;
@@ -268,9 +246,7 @@ always_comb begin: CULogic
             cuif.wsel   = 31;
             cuif.WEN    =  1;
             //PC
-            cuif.PCSrc1 = 0;
-            cuif.PCSrc2 = 1;
-            cuif.PCSrc3 = 0;
+            cuif.pcsrc = 2;
             //ALU
             cuif.aluop  = ALU_ADD;
             cuif.jaddr = jtype.addr;
@@ -278,7 +254,7 @@ always_comb begin: CULogic
         RTYPE  : begin //R-Type instruction management
             //Initialization
             //Program Counter Signals
-            cuif.PCSrc1 = 0; cuif.PCSrc2 = 0; cuif.PCSrc3 = 0;
+            cuif.pcsrc = 0;
             cuif.immed  = 0; cuif.jaddr  = 0; cuif.jraddr = 0;
             //ALU Signal
             cuif.aluop  = ALU_ADD;
@@ -301,9 +277,7 @@ always_comb begin: CULogic
                     cuif.wsel   = rtype.rd;
                     cuif.WEN    = 1;
                     //PC
-                    cuif.PCSrc1 = 0;
-                    cuif.PCSrc2 = 0;
-                    cuif.PCSrc3 = 0;
+
                     //ALU
                     cuif.aluop  = ALU_ADD;
                     cuif.wdat   = cuif.porto;
@@ -317,9 +291,7 @@ always_comb begin: CULogic
                     cuif.wsel   = rtype.rd;
                     cuif.WEN    = 1;
                     //PC
-                    cuif.PCSrc1 = 0;
-                    cuif.PCSrc2 = 0;
-                    cuif.PCSrc3 = 0;
+
                     //ALU
                     cuif.aluop  = ALU_AND;
                     cuif.wdat   = cuif.porto;
@@ -333,9 +305,7 @@ always_comb begin: CULogic
                     cuif.wsel   = rtype.rd;
                     cuif.WEN    = 1;
                     //PC
-                    cuif.PCSrc1 = 0;
-                    cuif.PCSrc2 = 0;
-                    cuif.PCSrc3 = 0;
+
                     //ALU
                     cuif.aluop  = ALU_NOR;
                     cuif.wdat   = cuif.porto;
@@ -349,9 +319,7 @@ always_comb begin: CULogic
                     cuif.wsel   = rtype.rd;
                     cuif.WEN    = 1;
                     //PC
-                    cuif.PCSrc1 = 0;
-                    cuif.PCSrc2 = 0;
-                    cuif.PCSrc3 = 0;
+
                     //ALU
                     cuif.aluop  = ALU_OR;
                     cuif.wdat   = cuif.porto;
@@ -365,9 +333,7 @@ always_comb begin: CULogic
                     cuif.wsel   = rtype.rd;
                     cuif.WEN    = 1;
                     //PC
-                    cuif.PCSrc1 = 0;
-                    cuif.PCSrc2 = 0;
-                    cuif.PCSrc3 = 0;
+
                     //ALU
                     cuif.aluop  = ALU_SLT;
                     cuif.wdat   = cuif.porto;
@@ -381,9 +347,7 @@ always_comb begin: CULogic
                     cuif.wsel   = rtype.rd;
                     cuif.WEN    = 1;
                     //PC
-                    cuif.PCSrc1 = 0;
-                    cuif.PCSrc2 = 0;
-                    cuif.PCSrc3 = 0;
+
                     //ALU
                     cuif.aluop  = ALU_SLTU;
                     cuif.wdat   = cuif.porto;
@@ -396,9 +360,7 @@ always_comb begin: CULogic
                     cuif.wsel   = rtype.rd;
                     cuif.WEN    = 1;
                     //PC
-                    cuif.PCSrc1 = 0;
-                    cuif.PCSrc2 = 0;
-                    cuif.PCSrc3 = 0;
+
                     //ALU
                     cuif.extop  = 0;
                     cuif.immed  = rtype.shamt;
@@ -413,9 +375,7 @@ always_comb begin: CULogic
                     cuif.wsel   = rtype.rd;
                     cuif.WEN    = 1;
                     //PC
-                    cuif.PCSrc1 = 0;
-                    cuif.PCSrc2 = 0;
-                    cuif.PCSrc3 = 0;
+
                     //ALU
                     cuif.extop  = 0;
                     cuif.immed  = rtype.shamt;
@@ -431,9 +391,7 @@ always_comb begin: CULogic
                     cuif.wsel   = rtype.rd;
                     cuif.WEN    = 1;
                     //PC
-                    cuif.PCSrc1 = 0;
-                    cuif.PCSrc2 = 0;
-                    cuif.PCSrc3 = 0;
+
                     //ALU
                     cuif.aluop  = ALU_SUB;
                     cuif.wdat   = cuif.porto;
@@ -447,9 +405,7 @@ always_comb begin: CULogic
                     cuif.wsel   = rtype.rd;
                     cuif.WEN    = 1;
                     //PC
-                    cuif.PCSrc1 = 0;
-                    cuif.PCSrc2 = 0;
-                    cuif.PCSrc3 = 0;
+
                     //ALU
                     cuif.aluop  = ALU_XOR;
                     cuif.wdat   = cuif.porto;
@@ -462,9 +418,7 @@ always_comb begin: CULogic
                     cuif.rsel2  = '0;
                     cuif.WEN    = 0;
                     //PC
-                    cuif.PCSrc1 = 0;
-                    cuif.PCSrc2 = 0;
-                    cuif.PCSrc3 = 1;
+                    cuif.pcsrc = 3;
                     //ALU
                     cuif.aluop  = ALU_ADD;
                     cuif.jraddr = cuif.porto;
@@ -478,9 +432,7 @@ always_comb begin: CULogic
                     cuif.rsel2  = '0;
                     cuif.WEN    = 0;
                     //PC
-                    cuif.PCSrc1 = 0;
-                    cuif.PCSrc2 = 0;
-                    cuif.PCSrc3 = 0;
+
                     //ALU
                     cuif.aluop  = ALU_ADD; 
                     cuif.dWEN = 0;

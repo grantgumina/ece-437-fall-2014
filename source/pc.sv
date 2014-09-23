@@ -33,15 +33,15 @@ always_comb begin: PCLogic
     if (pcif.rambusy) //wait for ram to finish
         PCregN = PCreg;
     else begin
-        if (pcif.PCSrc1) begin //branch
+        if (pcif.pcsrc == 1) begin //branch
             if (pcif.immed[15])
                 PCregN = PCplus4 + {14'b11111111111111,pcif.immed,2'b00};
             else
                 PCregN = PCplus4 + {14'b00000000000000,pcif.immed,2'b00};
         end
-        else if (pcif.PCSrc2) //jtype
+        else if (pcif.pcsrc == 2) //jtype
             PCregN = {PCplus4[31:28],pcif.jaddr,2'b00};
-        else if (pcif.PCSrc3) //jump to reg value
+        else if (pcif.pcsrc == 3) //jump to reg value (JR)
             PCregN = pcif.jraddr;
         else  //increment normally
             PCregN = PCplus4;

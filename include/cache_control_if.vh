@@ -69,15 +69,6 @@ interface cache_control_if;
             ccwait, ccinv, ccsnoopaddr,
     output  dREN, dWEN, daddr, dstore,
             ccwrite, cctrans
-<<<<<<< HEAD
-=======
-  );
-  modport caches (
-    input   iwait, iload, dwait, dload,
-            ccwait, ccinv, ccsnoopaddr,
-    output  iREN, iaddr, dREN, dWEN, daddr, dstore,
-            ccwrite, cctrans
->>>>>>> 3f7f4ff63c60e4f842d19b9da798ed96487b6f5e
   );
   modport caches (
     input   iwait, iload, dwait, dload,

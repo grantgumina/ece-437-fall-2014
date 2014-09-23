@@ -16,7 +16,8 @@ interface pc_if;
   import cpu_types_pkg::*;
 
   //signal declarations
-  logic PCSrc1, PCSrc2, PCSrc3, rambusy;
+  logic [1:0] pcsrc;
+  logic rambusy;
   //i_t itype;
   logic [IMM_W-1:0] immed;
   //j_t jump;
@@ -26,7 +27,7 @@ interface pc_if;
   //  modport
   modport pc (
    //--------------------------Inputs--------------------------------------------
-    input  PCSrc1, PCSrc2, PCSrc3, rambusy,
+    input  pcsrc, rambusy,
            immed, jaddr, jraddr,
     //-------------------------Outputs-------------------------------------------
     output imemaddr, rtnaddr

@@ -18,7 +18,7 @@ interface control_unit_if;
   //signal declarations
 
   //PC
-  logic     PCSrc1, PCSrc2, PCSrc3;
+  logic     [1:0] pcsrc;
   word_t    jraddr;
   logic [ADDR_W-1:0] jaddr;
 
@@ -55,11 +55,10 @@ interface control_unit_if;
     rdat2,
     //from Request Unit
     instr,
-
     //--------------------------Outputs--------------------------------------------
     output
     //to PC
-    PCSrc1, PCSrc2, PCSrc3, immed, jaddr, jraddr,
+    pcsrc, immed, jaddr, jraddr,
     //to ALU
     aluop,
     //to Register

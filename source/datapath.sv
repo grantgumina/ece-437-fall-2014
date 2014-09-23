@@ -47,9 +47,7 @@ module datapath (
   word_t aluoperand;
 
   //Program Counter
-  assign pcif.PCSrc1 = cuif.PCSrc1;
-  assign pcif.PCSrc2 = cuif.PCSrc2;
-  assign pcif.PCSrc3 = cuif.PCSrc3;
+  assign pcif.pcsrc = cuif.pcsrc;
   assign pcif.jaddr  = cuif.jaddr;
   assign pcif.jraddr = cuif.jraddr;
   assign pcif.immed  = cuif.immed;
