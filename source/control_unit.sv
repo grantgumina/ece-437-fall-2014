@@ -28,7 +28,6 @@ assign itype = cuif.instr;
 always_comb begin: CULogic
     //Initialization
     //Program Counter Signals
-    //cuif.PCSrc1 = 0; cuif.PCSrc2 = 0; cuif.PCSrc3 = 0;
     cuif.pcsrc  = 0;
     cuif.immed  = 0; cuif.jaddr  = 0; cuif.jraddr = 0;
     //ALU Signal
