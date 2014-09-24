@@ -11,9 +11,10 @@
 
 `include "register_file_if.vh"
 `include "control_unit_if.vh"
-`include "request_unit_if.vh"
 `include "alu_if.vh"
 `include "pc_if.vh"
+`include "pipeline_if.vh"
+
 
 // alu op, mips op, and instruction type
 `include "cpu_types_pkg.vh"
@@ -21,6 +22,7 @@
 module datapath (
   input logic CLK, nRST,
   datapath_cache_if.dp dpif
+
 );
   // import types
   import cpu_types_pkg::*;
@@ -31,16 +33,27 @@ module datapath (
   //interfaces
   register_file_if rfif ();
   control_unit_if  cuif ();
-  request_unit_if  ruif ();
   alu_if          aluif ();
   pc_if            pcif ();
 
-  //portmaps
+  //pipeline interfaces
+  pipeline_ifid_if      plif_ifid ();
+  pipeline_idex_if      plif_idex ();
+  pipeline_exmem_if    plif_exmem ();
+  pipeline_memwb_if    plif_memwb ();
+
+
+  //module portmaps
+  register_file            RF (CLK, nRST, rfif);
   control_unit             CU (cuif);
   alu                     ALU (aluif);
-  register_file            RF (CLK, nRST, rfif);
-  request_unit             RU (CLK, nRST, ruif);
   pc                       PC (CLK, nRST, pcif); 
+
+  //pipline portmaps
+  pipeline_ifid          IFID (CLK, nRST, en, plif_ifid); //NOTE: en comes from hazard unit, which is not in datapath.sv yet
+  pipeline_idex          IDEX (CLK, nRST, en, plif_idex);
+  pipeline_exmem        EXMEM (CLK, nRST, en, plif_exmem);
+  pipeline_memwb        MEMWB (CLK, nRST, en, plif_memwb);
  
   //intermediate signals
   word_t extimm, wdat;
@@ -71,12 +84,14 @@ module datapath (
   assign cuif.instr  = dpif.imemload;
   assign cuif.rdat2  = rfif.rdat2;
 
+/*
   //Request Unit
   assign ruif.ihit     = dpif.ihit;
   assign ruif.dhit     = dpif.dhit;
   assign ruif.dWEN     = cuif.dWEN;
   assign ruif.dREN     = cuif.dREN;
   assign ruif.cuhlt    = cuif.halt;
+*/
 
   //Datapath
   assign dpif.imemaddr  = pcif.imemaddr;
@@ -87,6 +102,7 @@ module datapath (
   assign dpif.dmemWEN   = ruif.dmemWEN;
   assign dpif.halt      = ruif.halt;
   assign dpif.datomic   = '0;
+
 
 
 
