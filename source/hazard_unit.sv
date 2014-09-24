@@ -16,23 +16,52 @@ import cpu_types_pkg::*;
 	hazard_unit_if hzif;
 );
 
-	always @(posedge clk or negedge nRST) begin : proc_
+	always_ff @ (posedge CLK or negedge nRST) begin
 		if(~nRST) begin
-			hzif.imemREN_out <= 0;
+			hzif.imemREN_out <= 1;
 			hzif.dmemREN_out <= 0;
 			hzif.dmemWEN_out <= 0;
-			pcsrc_out <= pcsrc_in;
 		end else begin
 			if (hzif.ihit == 1) begin
+				hzif.dmemREN_out <= hzif.dmemREN_in;
+				hzif.dmemWEN_out <= hzif.dmemWEN_in;
+				hzif.pcsrc_out <= hzif.pcsrc_in;
 			end else if (hzif.ihit == 0) begin
-				if ((hzif.dmemREN_in || hzif.dmemWEN_in) && !hzif.dhit) begin
-					if (hzif.dmemREN_in == 1 && hzif.dmemWEN_in == 0) begin
-					end else if (hzif.dmemREN_in == 0 && hzif.dmemWEN_in == 1) begin
-					end
+				hzif.imemREN_out <= 1;
+				hzif.dmemREN_out <= 0;
+				hzif.dmemWEN_out <= 0;
+				if (hzif.dmemREN_in == 1 && hzif.dmemWEN_in == 0) begin
+					hzif.imemREN_out <= 1;
+					hzif.dmemREN_out <= 1;
+					hzif.dmemWEN_out <= 0;
+				end else if (hzif.dmemREN_in == 0 && hzif.dmemWEN_in == 1) begin
+					hzif.imemREN_out <= 1;
+					hzif.dmemREN_out <= 0;
+					hzif.dmemWEN_out <= 1;
 				end
-			end else if (hzif.dhit == 1) begin // should this be an "if"? Remember this isn't neccessarily synchronous
+			end else if (hzif.dhit == 1) begin // same case as nRST
+				hzif.imemREN_out <= 1;
+				hzif.dmemREN_out <= 0;
+				hzif.dmemWEN_out <= 0;
 			end
 		end
 	end
+
+	always_ff @ (posedge CLK, or negedge nRST) begin
+		if (~nRST) begin
+			hzif.regen_out <= 0;
+		end else begin
+			if (hzif.ihit == 1) begin
+				hzif.regen_out <= hzif.regen_in;
+			end else begin
+				hzif.regen_out <= 0;
+			end
+		end
+	end
+
+	assign hzif.pcen = !hzif.ihit;
+
+	// data hazard detection code here
+	// TODO
 
 endmodule

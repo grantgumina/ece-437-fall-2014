@@ -22,7 +22,7 @@ interface hazard_unit_if;
   logic dmemREN_in;
   logic dmemWEN_in;
   logic regen_in;
-    logic hazen;
+  logic hazen;
   logic ihit;
   logic dhit;
   // will need these later for data hazard detection
@@ -37,7 +37,7 @@ interface hazard_unit_if;
   logic dmemWEN_out;
   logic regen_out;
   // required depending on how datapath is setup
-  logic [2:0] pcsrc_out;
+  // logic [2:0] pcsrc_out;
   logic pcen;
 
   //  modport
