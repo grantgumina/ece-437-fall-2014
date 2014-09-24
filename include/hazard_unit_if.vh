@@ -43,7 +43,7 @@ interface hazard_unit_if;
   // required depending on how datapath is setup
   // logic [2:0] pcsrc_out;
   // PC
-  logic pcen;
+  logic rambusy;
 
   //  modport
   modport hu (
@@ -51,7 +51,7 @@ interface hazard_unit_if;
     input pcsrc_in, dmemREN_in, dmemWEN_in, ihit,       dhit,  
           regen_in, ifid_rt_l,  ifid_rs_l,  idex_rt_l,  idex_alusrc_l, idex_dmemREN_l,
     //--------------------------Outputs----------------------------------------
-    output imemREN_out, dmemREN_out, dmemWEN_out, regen_out, pcen, hazen
+    output imemREN_out, dmemREN_out, dmemWEN_out, regen_out, rambusy, hazen
   );
 
 endinterface

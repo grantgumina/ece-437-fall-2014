@@ -9,11 +9,17 @@ interface pipeline_exmem_if;
   import cpu_types_pkg::*;
 
   //Signal Declarations
-  
+  //Registers
+  regbits_t rd, rd_l;
+  regbits_t rt, rt_l;
+  regbits_t rs, rs_l;
+
   //From ALU
   word_t porto, porto_l;
+  
   //From Register -> idex
-  word_t rdat2, rdat12_l;
+  word_t rdat2, rdat2_l;
+  
   //From Control Unit -> idex
   regbits_t wsel, wsel_l; //This is the register write location determined by the Control Unit (not DP muxes)
 	logic   regen, regen_l;

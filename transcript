@@ -21,22 +21,148 @@
 # Loading work.datapath
 # Loading work.register_file_if
 # Loading work.control_unit_if
-# Loading work.request_unit_if
+# Loading work.hazard_unit_if
 # Loading work.alu_if
 # Loading work.pc_if
-# Loading work.control_unit
-# Loading work.alu
+# Loading work.pipeline_ifid_if
+# Loading work.pipeline_idex_if
+# Loading work.pipeline_exmem_if
+# Loading work.pipeline_memwb_if
 # Loading work.register_file
-# Loading work.request_unit
+# Loading work.control_unit
+# Loading work.hazard_unit
+# Loading work.alu
 # Loading work.pc
+# Loading work.pipeline_ifid
+# Loading work.pipeline_idex
+# Loading work.pipeline_exmem
+# Loading work.pipeline_memwb
 # Loading work.caches
 # Loading work.memory_control
 # Loading work.ram
 # Loading altera_mf_ver.altsyncram
 # Loading altera_mf_ver.ALTERA_DEVICE_FAMILIES
 # Loading altera_mf_ver.ALTERA_MF_MEMORY_INITIALIZATION
-# run -all 
-# Starting Processor.
-# Halted at 275600 time and ran for      13779 cycles.
-# Starting memory dump.
-# Finished memory dump.
+# ** Warning: (vsim-3008) source/datapath.sv(149): [CNNODP] - Component name (idex_dmemREN_l) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP
+# ** Error: (vsim-3043) source/datapath.sv(149): Unresolved reference to 'idex_dmemREN_l' in plif_idex.idex_dmemREN_l.
+#         Region: /system_tb/DUT/CPU/DP
+# ** Warning: (vsim-3008) source/datapath.sv(71): [CNNODP] - Component name (intr) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP
+# ** Error: (vsim-3043) source/datapath.sv(71): Unresolved reference to 'intr' in plif_ifid.intr.
+#         Region: /system_tb/DUT/CPU/DP
+# ** Error: (vsim-3043) source/datapath.sv(95): Unresolved reference to 'ruif'.
+#         Region: /system_tb/DUT/CPU/DP
+# ** Warning: (vsim-3008) source/control_unit.sv(212): [CNNODP] - Component name (dmemaddr) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/CU
+# ** Error: (vsim-3043) source/control_unit.sv(212): Unresolved reference to 'dmemaddr' in cuif.dmemaddr.
+#         Region: /system_tb/DUT/CPU/DP/CU
+# ** Warning: (vsim-3008) source/hazard_unit.sv(67): [CNNODP] - Component name (idex_rt) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/HU
+# ** Error: (vsim-3043) source/hazard_unit.sv(67): Unresolved reference to 'idex_rt' in hzif.idex_rt.
+#         Region: /system_tb/DUT/CPU/DP/HU
+# ** Warning: (vsim-3008) source/hazard_unit.sv(67): [CNNODP] - Component name (ifid_rs) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/HU
+# ** Error: (vsim-3043) source/hazard_unit.sv(67): Unresolved reference to 'ifid_rs' in hzif.ifid_rs.
+#         Region: /system_tb/DUT/CPU/DP/HU
+# ** Warning: (vsim-3008) source/hazard_unit.sv(67): [CNNODP] - Component name (ifid_rt) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/HU
+# ** Error: (vsim-3043) source/hazard_unit.sv(67): Unresolved reference to 'ifid_rt' in hzif.ifid_rt.
+#         Region: /system_tb/DUT/CPU/DP/HU
+# ** Warning: (vsim-3008) source/pipeline_idex.sv(48): [CNNODP] - Component name (halt) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Error: (vsim-3043) source/pipeline_idex.sv(48): Unresolved reference to 'halt' in plif_idex.halt.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Warning: (vsim-3008) source/pipeline_idex.sv(27): [CNNODP] - Component name (halt_l) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Error: (vsim-3043) source/pipeline_idex.sv(27): Unresolved reference to 'halt_l' in plif_idex.halt_l.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Warning: (vsim-3008) source/pipeline_idex.sv(45): [CNNODP] - Component name (irsel) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Error: (vsim-3043) source/pipeline_idex.sv(45): Unresolved reference to 'irsel' in plif_idex.irsel.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Warning: (vsim-3008) source/pipeline_idex.sv(24): [CNNODP] - Component name (irsel_l) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Error: (vsim-3043) source/pipeline_idex.sv(24): Unresolved reference to 'irsel_l' in plif_idex.irsel_l.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Warning: (vsim-3008) source/pipeline_idex.sv(52): [CNNODP] - Component name (pcsrc) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Error: (vsim-3043) source/pipeline_idex.sv(52): Unresolved reference to 'pcsrc' in plif_idex.pcsrc.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Warning: (vsim-3008) source/pipeline_idex.sv(31): [CNNODP] - Component name (pcsrc_l) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Error: (vsim-3043) source/pipeline_idex.sv(31): Unresolved reference to 'pcsrc_l' in plif_idex.pcsrc_l.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Warning: (vsim-3008) source/pipeline_idex.sv(41): [CNNODP] - Component name (porta) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Error: (vsim-3043) source/pipeline_idex.sv(41): Unresolved reference to 'porta' in plif_idex.porta.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Warning: (vsim-3008) source/pipeline_idex.sv(20): [CNNODP] - Component name (porta_l) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Error: (vsim-3043) source/pipeline_idex.sv(20): Unresolved reference to 'porta_l' in plif_idex.porta_l.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Warning: (vsim-3008) source/pipeline_idex.sv(42): [CNNODP] - Component name (portb) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Error: (vsim-3043) source/pipeline_idex.sv(42): Unresolved reference to 'portb' in plif_idex.portb.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Warning: (vsim-3008) source/pipeline_idex.sv(21): [CNNODP] - Component name (portb_l) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Error: (vsim-3043) source/pipeline_idex.sv(21): Unresolved reference to 'portb_l' in plif_idex.portb_l.
+#         Region: /system_tb/DUT/CPU/DP/IDEX
+# ** Warning: (vsim-3008) source/pipeline_exmem.sv(14): [CNNODP] - Component name (extimm) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Error: (vsim-3043) source/pipeline_exmem.sv(14): Unresolved reference to 'extimm' in plif_exmem.extimm.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Warning: (vsim-3008) source/pipeline_exmem.sv(26): [CNNODP] - Component name (extimm_l) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Error: (vsim-3043) source/pipeline_exmem.sv(26): Unresolved reference to 'extimm_l' in plif_exmem.extimm_l.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Warning: (vsim-3008) source/pipeline_exmem.sv(21): [CNNODP] - Component name (halt) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Error: (vsim-3043) source/pipeline_exmem.sv(21): Unresolved reference to 'halt' in plif_exmem.halt.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Warning: (vsim-3008) source/pipeline_exmem.sv(33): [CNNODP] - Component name (halt_l) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Error: (vsim-3043) source/pipeline_exmem.sv(33): Unresolved reference to 'halt_l' in plif_exmem.halt_l.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Warning: (vsim-3008) source/pipeline_exmem.sv(15): [CNNODP] - Component name (imemaddr) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Error: (vsim-3043) source/pipeline_exmem.sv(15): Unresolved reference to 'imemaddr' in plif_exmem.imemaddr.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Warning: (vsim-3008) source/pipeline_exmem.sv(27): [CNNODP] - Component name (imemaddr_l) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Error: (vsim-3043) source/pipeline_exmem.sv(27): Unresolved reference to 'imemaddr_l' in plif_exmem.imemaddr_l.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Warning: (vsim-3008) source/pipeline_exmem.sv(19): [CNNODP] - Component name (pcsrc) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Error: (vsim-3043) source/pipeline_exmem.sv(19): Unresolved reference to 'pcsrc' in plif_exmem.pcsrc.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Warning: (vsim-3008) source/pipeline_exmem.sv(31): [CNNODP] - Component name (pcsrc_l) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Error: (vsim-3043) source/pipeline_exmem.sv(31): Unresolved reference to 'pcsrc_l' in plif_exmem.pcsrc_l.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Warning: (vsim-3008) source/pipeline_exmem.sv(31): [CNNODP] - Component name (reg_write) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Error: (vsim-3043) source/pipeline_exmem.sv(31): Unresolved reference to 'reg_write' in plif_exmem.reg_write.
+#         Region: /system_tb/DUT/CPU/DP/EXMEM
+# ** Warning: (vsim-3008) source/pipeline_memwb.sv(13): [CNNODP] - Component name (extimm) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/MEMWB
+# ** Error: (vsim-3043) source/pipeline_memwb.sv(13): Unresolved reference to 'extimm' in plif_memwb.extimm.
+#         Region: /system_tb/DUT/CPU/DP/MEMWB
+# ** Warning: (vsim-3008) source/pipeline_memwb.sv(22): [CNNODP] - Component name (extimm_l) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/MEMWB
+# ** Error: (vsim-3043) source/pipeline_memwb.sv(22): Unresolved reference to 'extimm_l' in plif_memwb.extimm_l.
+#         Region: /system_tb/DUT/CPU/DP/MEMWB
+# ** Warning: (vsim-3008) source/pipeline_memwb.sv(17): [CNNODP] - Component name (halt) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/MEMWB
+# ** Error: (vsim-3043) source/pipeline_memwb.sv(17): Unresolved reference to 'halt' in plif_memwb.halt.
+#         Region: /system_tb/DUT/CPU/DP/MEMWB
+# ** Warning: (vsim-3008) source/pipeline_memwb.sv(26): [CNNODP] - Component name (halt_l) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/MEMWB
+# ** Error: (vsim-3043) source/pipeline_memwb.sv(26): Unresolved reference to 'halt_l' in plif_memwb.halt_l.
+#         Region: /system_tb/DUT/CPU/DP/MEMWB
+# ** Warning: (vsim-3008) source/pipeline_memwb.sv(19): [CNNODP] - Component name (regen_sel) is not on a downward path.
+#         Region: /system_tb/DUT/CPU/DP/MEMWB
+# ** Error: (vsim-3043) source/pipeline_memwb.sv(19): Unresolved reference to 'regen_sel' in plif_memwb.regen_sel.
+#         Region: /system_tb/DUT/CPU/DP/MEMWB
+# Error loading design

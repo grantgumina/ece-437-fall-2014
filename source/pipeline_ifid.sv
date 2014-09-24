@@ -7,12 +7,12 @@ import cpu_types_pkg::*;
 	pipeline_ifid_if plif_ifid
 );
 
-always_ff @ (posedge CLK or negedge nRST) begin
-	if (~nRST) begin
-		plif_ifid.instr_l <= 0;
-	end else if (plif_ifid.en) begin
-		plif_ifid.instr_l <= plif_ifid.instr; 
+	always_ff @ (posedge CLK or negedge nRST) begin
+		if (~nRST) begin
+			plif_ifid.instr_l <= 0;
+		end else if (plif_ifid.en) begin
+			plif_ifid.instr_l <= plif_ifid.instr; 
+		end
 	end
-end
 
 endmodule
