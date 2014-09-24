@@ -9,9 +9,9 @@ import cpu_types_pkg::*;
 
 always @(posedge clk or negedge rst_n) begin
 	if(~nRST) begin
-		plif_ifid.instruction_l <= 0;
+		plif_ifid.instr_l <= 0;
 	end else if(en) begin
-		plif_ifid.instruction_l <= plif_ifid.instruction; 
+		plif_ifid.instr_l <= plif_ifid.instr; 
 	end
 end
 
