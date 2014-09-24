@@ -96,7 +96,7 @@ module datapath (
   assign plif_idex.hlt     = cuif.halt;
   assign plif_idex.dmemWEN = cuif.dWEN;
   assign plif_idex.dmemREN = cuif.dREN;
-  assign plif_idex.rambusy = //comes from hazard unit;
+  assign plif_idex.rambusy = hzif.rambusy;
 
   //ex
   assign aluoperand  = plif_idex.alusrc ? extimm : plif_idex.rdat2_l;

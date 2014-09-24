@@ -59,7 +59,7 @@ import cpu_types_pkg::*;
 		end
 	end
 
-	assign hzif.pcen = !hzif.ihit;
+	assign hzif.rambusy = !hzif.ihit;
 
 	// data hazard detection code here
 	always_comb begin

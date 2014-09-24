@@ -1,10 +1,10 @@
 `include "cpu_types_pkg.vh"
-`include "pipeline_if.vh"
+`include "pipeline_idex_if.vh"
 module pipeline_idex
 import cpu_types_pkg::*;
 (
-	input logic CLK, nRST, en,
-	pipeline_if.idex plif_idex
+	input logic CLK, nRST,
+	pipeline_idex_if plif_idex
 );
 
 	always_ff @ (posedge CLK) begin
@@ -52,4 +52,5 @@ import cpu_types_pkg::*;
 			plif_idex.pcsrc_l <= plif_idex.pcsrc;
 		end
 	end
+
 endmodule

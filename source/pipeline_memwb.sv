@@ -1,10 +1,10 @@
 `include "cpu_types_pkg.vh"
-`include "pipeline_if.vh"
+`include "pipeline_memwb_if.vh"
 module pipeline_memwb
 import cpu_types_pkg::*;
 (
-	input logic CLK, nRST, en,
-	pipeline_if.memwb plif_memwb
+	input logic CLK, nRST,
+	pipeline_memwb_if plif_memwb
 );
 
 	always_ff @ (posedge CLK) begin
