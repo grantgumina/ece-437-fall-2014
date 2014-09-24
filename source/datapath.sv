@@ -10,10 +10,13 @@
 `include "datapath_cache_if.vh"
 `include "register_file_if.vh"
 `include "control_unit_if.vh"
+`include "hazard_unit_if.vh"
 `include "alu_if.vh"
 `include "pc_if.vh"
-`include "pipeline_if.vh"
-
+`include "pipeline_ifid_if.vh"
+`include "pipeline_idex_if.vh"
+`include "pipeline_exmem_if.vh"
+`include "pipeline_memwb_if.vh"
 
 // alu op, mips op, and instruction type
 `include "cpu_types_pkg.vh"
@@ -32,8 +35,10 @@ module datapath (
   //interfaces
   register_file_if rfif ();
   control_unit_if  cuif ();
+  hazard_unit_if   hzif ();
   alu_if          aluif ();
   pc_if            pcif ();
+
 
   //pipeline interfaces
   pipeline_ifid_if      plif_ifid ();
@@ -45,6 +50,7 @@ module datapath (
   //module portmaps
   register_file            RF (CLK, nRST, rfif);
   control_unit             CU (cuif);
+  hazard_unit              HU (CLK, nRST, hzif);
   alu                     ALU (aluif);
   pc                       PC (CLK, nRST, pcif); 
 
@@ -62,7 +68,7 @@ module datapath (
   assign dpif.imemaddr = pcif.imemaddr;
 
   //if -> id
-  assign plif_ifid.intr = dpif.imemload;
+  assign plif_ifid.instr = dpif.imemload;
 
   //id
   assign cuif.instr  = plif_ifid.instr_l;
@@ -86,17 +92,18 @@ module datapath (
 
   //id -> ex
   assign plif_idex.wsel    = cuif.wsel;
-  assign plif_idex.rdat1   = ruif.rdat1;
-  assign plif_idex.rdat1   = ruif.rdat2;
+  assign plif_idex.rdat1   = rfif.rdat1;
+  assign plif_idex.rdat2   = rfif.rdat2;
   assign plif_idex.extimm  = extimm;
   assign plif_idex.alusrc  = cuif.alusrc;
   assign plif_idex.aluop   = cuif.aluop;
   assign plif_idex.regsrc  = cuif.regsrc;
   assign plif_idex.regen   = cuif.WEN;
+//assign plif_idex.regen   = hzif.regen_out;
   assign plif_idex.hlt     = cuif.halt;
   assign plif_idex.dmemWEN = cuif.dWEN;
   assign plif_idex.dmemREN = cuif.dREN;
-  assign plif_idex.rambusy = //comes from hazard unit;
+  assign plif_idex.rambusy = hzif.rambusy;
 
   //ex
   assign aluoperand  = plif_idex.alusrc ? extimm : plif_idex.rdat2_l;
@@ -116,20 +123,33 @@ module datapath (
   assign plif_exmem.porto   = aluif.porto;
 
   //mem
-  assign dpif.dmemaddr  = plif_exmem.porto_l;
-  assign dpif.dmemstore = plif_exmem.rdat2_l;
-  assign dpif.dmemREN   = plif_exmem.dmemREN_l;
-  assign dpif.dmemWEN   = plif_exmem.dmemWEN_l;
-  assign dpif.halt      = plif_exmem.hlt_l;
+  assign dpif.dmemaddr        = plif_exmem.porto_l;
+  assign dpif.dmemstore       = plif_exmem.rdat2_l;
+  //assign dpif.dmemREN         = plif_exmem.dmemREN_l;
+  //assign dpif.dmemWEN         = plif_exmem.dmemWEN_l;
+  assign dpif.halt            = plif_exmem.hlt_l;
+  assign dpif.imemREN         = hzif.imemREN_out;
+  assign dpif.dmemREN         = hzif.dmemREN_out;
+  assign dpif.dmemWEN         = hzif.dmemWEN_out;
 
   //mem -> wb
-  assign plif_memwb.wsel     = plif_exmem.wsel_l;
-  assign plif_memwb.regsrc   = plif_exmem.regsrc_l;
-  assign plif_memwb.regen    = plif_exmem.regen_l;
-  assign plif_memwb.porto    = plif_exmem.porto_l;
-  assign plif_memwb.dmemload = dpif.dmemload;
+  assign plif_memwb.wsel      = plif_exmem.wsel_l;
+  assign plif_memwb.regsrc    = plif_exmem.regsrc_l;
+  assign plif_memwb.regen     = plif_exmem.regen_l;
+  assign plif_memwb.porto     = plif_exmem.porto_l;
+  assign plif_memwb.dmemload  = dpif.dmemload;
 
-  //wb
+  // hazard unit
+  assign hzif.dmemREN_in      = plif_exmem.dmemREN_l;
+  assign hzif.dmemWEN_in      = plif_exmem.dmemWEN_l;
+  assign hzif.ihit            = dpif.ihit;
+  assign hzif.dhit            = dpif.dhit;
+  assign hzif.regen_in        = plif_memwb.regen_l;
+  assign hzif.idex_alusrc_l   = plif_idex.alusrc_l;
+  assign hzif.idex_dmemREN_l  = plif_idex.dmemREN_l;
+
+  // pc
+  assign pcif.rambusy = hzif.rambusy;
 
   //Register Source Mux
   always_comb begin
@@ -144,39 +164,6 @@ module datapath (
   assign rfif.wdat = wdat;
 
   //Unused signals
-  assign dpif.datomic   = '0;  
-
-  /* previous datapath shit
-  //Program Counter
-  assign pcif.pcsrc  = cuif.pcsrc;
-  assign pcif.jaddr  = cuif.jaddr;
-  assign pcif.jraddr = cuif.jraddr;
-  assign pcif.immed  = cuif.immed;
-  assign pcif.rambusy= ruif.rambusy;
-
-  //ALU
-  assign aluif.porta = rfif.rdat1;
-  assign aluif.portb = aluoperand;
-  assign aluif.aluop = cuif.aluop;
-
-  //Register
-
-  //Control Unit
-  assign cuif.porto  = aluif.porto;
-  assign cuif.zflag  = aluif.z_flag;
-  assign cuif.instr  = dpif.imemload;
-  assign cuif.rdat2  = rfif.rdat2;
-  
-
-  //Datapath
-  assign dpif.imemaddr  = pcif.imemaddr;
-  assign dpif.dmemaddr  = cuif.dmemaddr;
-  assign dpif.dmemstore = cuif.dmemstore;
-  assign dpif.imemREN   = ruif.imemREN;
-  assign dpif.dmemREN   = ruif.dmemREN;
-  assign dpif.dmemWEN   = ruif.dmemWEN;
-  assign dpif.halt      = ruif.halt;
   assign dpif.datomic   = '0;
-*/
 
 endmodule

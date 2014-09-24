@@ -21,14 +21,22 @@
 # Loading work.datapath
 # Loading work.register_file_if
 # Loading work.control_unit_if
-# Loading work.request_unit_if
+# Loading work.hazard_unit_if
 # Loading work.alu_if
 # Loading work.pc_if
-# Loading work.control_unit
-# Loading work.alu
+# Loading work.pipeline_ifid_if
+# Loading work.pipeline_idex_if
+# Loading work.pipeline_exmem_if
+# Loading work.pipeline_memwb_if
 # Loading work.register_file
-# Loading work.request_unit
+# Loading work.control_unit
+# Loading work.hazard_unit
+# Loading work.alu
 # Loading work.pc
+# Loading work.pipeline_ifid
+# Loading work.pipeline_idex
+# Loading work.pipeline_exmem
+# Loading work.pipeline_memwb
 # Loading work.caches
 # Loading work.memory_control
 # Loading work.ram
@@ -37,6 +45,7 @@
 # Loading altera_mf_ver.ALTERA_MF_MEMORY_INITIALIZATION
 # run -all 
 # Starting Processor.
-# Halted at 275600 time and ran for      13779 cycles.
-# Starting memory dump.
-# Finished memory dump.
+# Break key hit 
+# Break in Module memory_control at source/memory_control.sv line 45
+# Stopped at source/memory_control.sv line 45 
+#  exit 

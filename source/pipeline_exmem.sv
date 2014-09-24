@@ -1,45 +1,49 @@
 `include "cpu_types_pkg.vh"
-`include "pipeline_if.vh"
+`include "pipeline_exmem_if.vh"
 module pipeline_exmem
 import cpu_types_pkg::*;
 (
-input logic CLK, nRST, en,
-	pipeline_if.exmem plif_exmem
+input logic CLK, nRST,
+	pipeline_exmem_if.exmem plif_exmem
 );
 
-	always_ff @ (posedge CLK) begin
-	if(!nRST) begin
-		plif_exmem.portb_dl <= 0;
-		plif_exmem.porto_l <= 0;
-		plif_exmem.extimm_dl <= 0;
-		plif_exmem.imemaddr_l <= 0;
-		plif_exmem.wsel_l <= 0;
-		plif_exmem.dmemREN_dl <= 0;
-		plif_exmem.dmemWEN_dl <= 0;
-		plif_exmem.pcsrc_dl <= 0;
-		plif_exmem.regsrc_dl <= 0;
-		plif_exmem.halt_dl <= 0;
-		plif_exmem.nflag_l <= 0;
-		plif_exmem.zflag_l <= 0;
-		plif_exmem.vflag_l <= 0;
-		plif_exmem.pcsrc_dl <= 0;
+	always_ff @ (posedge CLK, negedge nRST) begin
+		if(~nRST || plif_exmem.sRST) begin
+			//Register File
+			plif_exmem.rd_l <= regbits_t'(0);
+			plif_exmem.rt_l <= regbits_t'(0);
+			plif_exmem.rs_l <= regbits_t'(0);
+			plif_exmem.wsel_l <= 0;
+			plif_exmem.regen_l <= 0;
+			plif_exmem.rdat2_l <= 0;
+			//ALU
+			plif_exmem.porto_l <= 0;
+			//Memory
+			plif_exmem.dmemREN_l <= 0;
+			plif_exmem.dmemWEN_l <= 0;
+			plif_exmem.rambusy_l <= 0;
+			//Datapath
+			plif_exmem.regsrc_l <= 0;
+			plif_exmem.hlt_l <= 0;
+		end
+		else if(plif_exmem.en) begin
+			//Register File
+			plif_exmem.rd_l    <= plif_exmem.rd;
+			plif_exmem.rt_l    <= plif_exmem.rt;
+			plif_exmem.rs_l    <= plif_exmem.rs;
+			plif_exmem.wsel_l  <= plif_exmem.wsel;
+			plif_exmem.regen_l <= plif_exmem.regen;
+			plif_exmem.rdat2_l <= plif_exmem.rdat2;
+			//ALU
+			plif_exmem.porto_l <= plif_exmem.porto;
+			//Memory
+			plif_exmem.dmemREN_l <= plif_exmem.dmemREN;
+			plif_exmem.dmemWEN_l <= plif_exmem.dmemWEN;
+			plif_exmem.rambusy_l   <= plif_exmem.rambusy;
+			//Datapath
+			plif_exmem.regsrc_l <= plif_exmem.regsrc;
+			plif_exmem.hlt_l    <= plif_exmem.hlt;
+		end
 	end
-	else if(plif_exmem.en) begin
-		plif_exmem.portb_dl <= plif_exmem.portb_l;
-		plif_exmem.porto_l <= plif_exmem.porto;
-		plif_exmem.extimm_dl <= plif_exmem.extimm_l;
-		plif_exmem.imemaddr_l <= plif_exmem.imemaddr;
-		plif_exmem.wsel_l <= plif_exmem.wsel;
-		plif_exmem.dmemREN_dl <= plif_exmem.dmemREN_l;
-		plif_exmem.dmemWEN_dl <= plif_exmem.dmemWEN_l;
-		plif_exmem.pcsrc_dl <= plif_exmem.reg_write_l;
-		plif_exmem.regsrc_dl <= plif_exmem.regsrc_l;
-		plif_exmem.halt_dl <= plif_exmem.halt_l;
-		plif_exmem.nflag_l <= plif_exmem.nflag;
-		plif_exmem.zflag_l <= plif_exmem.zflag;
-		plif_exmem.vflag_l <= plif_exmem.vflag;
-		plif_exmem.pcsrc_dl <= plif_exmem.pcsrc_l;
-	end
-end
 
-
+endmodule

@@ -13,7 +13,7 @@ module hazard_unit
 import cpu_types_pkg::*;
 (
 	input CLK, nRST,
-	hazard_unit_if hzif;
+	hazard_unit_if hzif
 );
 
 	always_ff @ (posedge CLK or negedge nRST) begin
@@ -47,7 +47,7 @@ import cpu_types_pkg::*;
 		end
 	end
 
-	always_ff @ (posedge CLK, or negedge nRST) begin
+	always_ff @ (posedge CLK or negedge nRST) begin
 		if (~nRST) begin
 			hzif.regen_out <= 0;
 		end else begin
@@ -59,12 +59,12 @@ import cpu_types_pkg::*;
 		end
 	end
 
-	assign hzif.pcen = !hzif.ihit;
+	assign hzif.rambusy = !hzif.ihit;
 
 	// data hazard detection code here
+	// todo fix this
 	always_comb begin
-		if (hzif.idex_dmemREN_l && 
-			(hzif.idex_rt_l == hzif.ifid_rs_l) || (hzif.idex_rt_l == hzif.ifid_rt_l)) begin
+		if (hzif.idex_dmemREN_l && (hzif.idex_rt_l == hzif.rs) || (hzif.idex_rt_l == hzif.rt)) begin
 			hzif.hazen = 1;
 		end else begin
 			hzif.hazen = 0;

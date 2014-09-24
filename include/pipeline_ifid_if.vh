@@ -5,14 +5,11 @@
 
 `include "cpu_types_pkg.vh"
 
-//Signal Delcarations
-word_t instr;
-word_t instr_l;
-
 interface pipeline_ifid_if;
 	// import types
   import cpu_types_pkg::*;
 
+	//Signal Delcarations
   logic  en;
   logic	 sRST;
   word_t instr, instr_l;

@@ -208,8 +208,7 @@ always_comb begin: CULogic
             //ALU
             cuif.immed  = itype.imm;
             cuif.extop  = 1;
-            cuif.aluop  = ALU_ADD;
-            cuif.dmemaddr = cuif.porto;          
+            cuif.aluop  = ALU_ADD;     
         end
         HALT : begin
             cuif.halt = 1;
