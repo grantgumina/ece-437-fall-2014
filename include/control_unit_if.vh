@@ -30,16 +30,15 @@ interface control_unit_if;
   //Register
   logic     WEN;
   regbits_t wsel, rsel1, rsel2;
-  word_t    wdat, rdat2;
+  word_t    rdat2;
   
   //Request Unit
   word_t    instr;
-  word_t    dmemaddr, dmemstore;
 
   //Datapath
   logic [1:0] extop;
-  logic  irsel;
-  logic [1:0] memtoreg;
+  logic alusrc;
+  logic [1:0] regsrc;
   logic [IMM_W-1:0] immed;
   logic dWEN, dREN;
   logic halt;
@@ -62,11 +61,11 @@ interface control_unit_if;
     //to ALU
     aluop,
     //to Register
-    WEN, wsel, rsel1, rsel2, wdat,
+    WEN, wsel, rsel1, rsel2,
     //to Datapath
-    extop, irsel, memtoreg, //immed,
+    extop, alusrc, regsrc, //immed,
     //to Request Unit
-    dmemaddr, dmemstore, halt, dWEN, dREN
+    halt, dWEN, dREN
   );
 
   /*

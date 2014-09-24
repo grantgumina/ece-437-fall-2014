@@ -33,18 +33,17 @@ always_comb begin: CULogic
     //ALU Signal
     cuif.aluop  = ALU_ADD;
     //Register Signals
-    cuif.WEN = 0;  cuif.wdat = 0;
+    cuif.WEN = 0;
     cuif.wsel = 0; cuif.rsel1 = 0; cuif.rsel2 = 0;
     //Datapath Signals
-    cuif.extop = 0; cuif.irsel = 0; cuif.memtoreg = 0;
+    cuif.extop = 0; cuif.alusrc = 0; cuif.regsrc = 0;
     //Cache / Request Unit Signlas
-    cuif.dmemstore = 0; cuif.dmemaddr  = 0;
     cuif.dWEN = 0; cuif.dREN = 0; cuif.halt = 0;
 
     casez (itype.opcode) //I-type instruction management
         BEQ  : begin
-            cuif.irsel  = 0;
-            ///////////////cuif.memtoreg = 0;
+            cuif.alusrc  = 0;
+            ///////////////cuif.regsrc = 0;
             //Registers
             cuif.rsel1  = itype.rs;
             cuif.rsel2  = itype.rt;
@@ -57,7 +56,7 @@ always_comb begin: CULogic
             cuif.aluop  = ALU_SUB;
         end
         BNE  : begin
-            cuif.irsel  = 0;
+            cuif.alusrc  = 0;
             //Registers
             cuif.rsel1  = itype.rs;
             cuif.rsel2  = itype.rt;
@@ -70,8 +69,8 @@ always_comb begin: CULogic
             cuif.aluop  = ALU_SUB;
         end
         ADDI : begin
-            cuif.irsel  = 1;
-            cuif.memtoreg = 0;
+            cuif.alusrc  = 1;
+            cuif.regsrc = 0;
             //Registers
             cuif.rsel1  = itype.rs;
             cuif.wsel   = itype.rt;
@@ -82,11 +81,10 @@ always_comb begin: CULogic
             cuif.immed  = itype.imm;
             cuif.extop  = 1;
             cuif.aluop  = ALU_ADD;
-            cuif.wdat   = cuif.porto;
         end
         ADDIU: begin
-            cuif.irsel  = 1;
-            cuif.memtoreg = 0;
+            cuif.alusrc  = 1;
+            cuif.regsrc = 0;
             //Registers
             cuif.rsel1  = itype.rs;
             cuif.wsel   = itype.rt;
@@ -97,11 +95,10 @@ always_comb begin: CULogic
             cuif.immed  = itype.imm;
             cuif.extop  = 1;
             cuif.aluop  = ALU_ADD;
-            cuif.wdat   = cuif.porto;
         end
         SLTI : begin
-            cuif.irsel  = 1;
-            cuif.memtoreg = 0;
+            cuif.alusrc  = 1;
+            cuif.regsrc = 0;
             //Registers
             cuif.rsel1  = itype.rs;
             cuif.wsel   = itype.rt;
@@ -112,11 +109,10 @@ always_comb begin: CULogic
             cuif.immed  = itype.imm;
             cuif.extop  = 1;
             cuif.aluop  = ALU_SLT;
-            cuif.wdat   = cuif.porto;
         end
         SLTIU: begin
-            cuif.irsel  = 1;
-            cuif.memtoreg = 0;
+            cuif.alusrc  = 1;
+            cuif.regsrc = 0;
             //Registers
             cuif.rsel1  = itype.rs;
             cuif.wsel   = itype.rt;
@@ -127,11 +123,10 @@ always_comb begin: CULogic
             cuif.immed  = itype.imm;
             cuif.extop  = 0;
             cuif.aluop  = ALU_SLT;
-            cuif.wdat   = cuif.porto;
         end
         ANDI : begin
-            cuif.irsel  = 1;
-            cuif.memtoreg = 0;
+            cuif.alusrc  = 1;
+            cuif.regsrc = 0;
             //Registers
             cuif.rsel1  = itype.rs;
             cuif.wsel   = itype.rt;
@@ -142,11 +137,10 @@ always_comb begin: CULogic
             cuif.immed  = itype.imm;
             cuif.extop  = 0;
             cuif.aluop  = ALU_AND;
-            cuif.wdat   = cuif.porto;
         end
         ORI  : begin
-            cuif.irsel  = 1;
-            cuif.memtoreg = 0;
+            cuif.alusrc  = 1;
+            cuif.regsrc = 0;
             //Registers
             cuif.rsel1  = itype.rs;
             cuif.wsel   = itype.rt;
@@ -157,11 +151,10 @@ always_comb begin: CULogic
             cuif.immed  = itype.imm;
             cuif.extop  = 0;
             cuif.aluop  = ALU_OR;
-            cuif.wdat   = cuif.porto;
         end
         XORI : begin
-            cuif.irsel  = 1;
-            cuif.memtoreg = 0;
+            cuif.alusrc  = 1;
+            cuif.regsrc = 0;
             //Registers
             cuif.rsel1  = itype.rs;
             cuif.wsel   = itype.rt;
@@ -172,11 +165,10 @@ always_comb begin: CULogic
             cuif.immed  = itype.imm;
             cuif.extop  = 0;
             cuif.aluop  = ALU_XOR;
-            cuif.wdat   = cuif.porto;
         end
         LUI  : begin
-            cuif.irsel  = 1;
-            cuif.memtoreg = 0;
+            cuif.alusrc  = 1;
+            cuif.regsrc = 0;
             //Registers
             cuif.rsel1  = '0;
             cuif.wsel   = itype.rt;
@@ -187,11 +179,10 @@ always_comb begin: CULogic
             cuif.immed  = itype.imm;
             cuif.extop  = 2;
             cuif.aluop  = ALU_ADD;
-            cuif.wdat   = cuif.porto;
         end
         LW   : begin
-            cuif.irsel  = 1;
-            cuif.memtoreg = 1;
+            cuif.alusrc  = 1;
+            cuif.regsrc = 1;
             cuif.dREN   = 1;
             //Registers
             cuif.rsel1  = itype.rs;
@@ -203,11 +194,10 @@ always_comb begin: CULogic
             cuif.immed  = itype.imm;
             cuif.extop  = 1;
             cuif.aluop  = ALU_ADD;
-            cuif.dmemaddr = cuif.porto;
         end
         SW   : begin
-            cuif.irsel  = 1;
-            cuif.memtoreg = 1;
+            cuif.alusrc  = 1;
+            cuif.regsrc = 1;
             cuif.dWEN = 1;
             //Registers
             cuif.rsel1  = itype.rs;
@@ -220,15 +210,14 @@ always_comb begin: CULogic
             cuif.extop  = 1;
             cuif.aluop  = ALU_ADD;
             cuif.dmemaddr = cuif.porto;          
-            cuif.dmemstore = cuif.rdat2;
         end
         HALT : begin
             cuif.halt = 1;
         end
         //J-type instructions
         J: begin
-            cuif.irsel  = 0;
-            cuif.memtoreg = 0;
+            cuif.alusrc  = 0;
+            cuif.regsrc = 0;
             //Registers
             cuif.WEN    =  0;
             //PC
@@ -238,10 +227,9 @@ always_comb begin: CULogic
             cuif.jaddr = jtype.addr;
         end  
         JAL: begin
-            cuif.irsel  = 0;
-            cuif.memtoreg = 2;
+            cuif.alusrc  = 0;
+            cuif.regsrc = 2;
             //Registers 
-            //cuif.wdat   = 
             cuif.wsel   = 31;
             cuif.WEN    =  1;
             //PC
@@ -258,18 +246,17 @@ always_comb begin: CULogic
             //ALU Signal
             cuif.aluop  = ALU_ADD;
             //Register Signals
-            cuif.WEN = 0;  cuif.wdat = 0;
+            cuif.WEN = 0;
             cuif.wsel = 0; cuif.rsel1 = 0; cuif.rsel2 = 0;
             //Datapath Signals
-            cuif.extop = 0; cuif.irsel = 0; cuif.memtoreg = 0;
+            cuif.extop = 0; cuif.alusrc = 0; cuif.regsrc = 0;
             //Cache / Request Unit Signlas
-            cuif.dmemstore = 0; cuif.dmemaddr  = 0;
             cuif.dWEN = 0; cuif.dREN = 0; cuif.halt = 0;
 
             casez(rtype.funct)
                 ADDU : begin
-                    cuif.irsel  = 0;
-                    cuif.memtoreg = 0;
+                    cuif.alusrc  = 0;
+                    cuif.regsrc = 0;
                     //Registers
                     cuif.rsel1  = rtype.rs;
                     cuif.rsel2  = rtype.rt;
@@ -279,11 +266,10 @@ always_comb begin: CULogic
 
                     //ALU
                     cuif.aluop  = ALU_ADD;
-                    cuif.wdat   = cuif.porto;
                 end
                 AND  : begin
-                    cuif.irsel  = 0;
-                    cuif.memtoreg = 0;
+                    cuif.alusrc  = 0;
+                    cuif.regsrc = 0;
                     //Registers
                     cuif.rsel1  = rtype.rs;
                     cuif.rsel2  = rtype.rt;
@@ -293,11 +279,10 @@ always_comb begin: CULogic
 
                     //ALU
                     cuif.aluop  = ALU_AND;
-                    cuif.wdat   = cuif.porto;
                 end
                 NOR  : begin
-                    cuif.irsel  = 0;
-                    cuif.memtoreg = 0;
+                    cuif.alusrc  = 0;
+                    cuif.regsrc = 0;
                     //Registers
                     cuif.rsel1  = rtype.rs;
                     cuif.rsel2  = rtype.rt;
@@ -307,11 +292,10 @@ always_comb begin: CULogic
 
                     //ALU
                     cuif.aluop  = ALU_NOR;
-                    cuif.wdat   = cuif.porto;
                 end
                 OR   : begin
-                    cuif.irsel  = 0;
-                    cuif.memtoreg = 0;
+                    cuif.alusrc  = 0;
+                    cuif.regsrc = 0;
                     //Registers
                     cuif.rsel1  = rtype.rs;
                     cuif.rsel2  = rtype.rt;
@@ -321,11 +305,10 @@ always_comb begin: CULogic
 
                     //ALU
                     cuif.aluop  = ALU_OR;
-                    cuif.wdat   = cuif.porto;
                 end
                 SLT  : begin
-                    cuif.irsel  = 0;
-                    cuif.memtoreg = 0;
+                    cuif.alusrc  = 0;
+                    cuif.regsrc = 0;
                     //Registers
                     cuif.rsel1  = rtype.rs;
                     cuif.rsel2  = rtype.rt;
@@ -335,11 +318,10 @@ always_comb begin: CULogic
 
                     //ALU
                     cuif.aluop  = ALU_SLT;
-                    cuif.wdat   = cuif.porto;
                 end
                 SLTU :  begin
-                    cuif.irsel  = 0;
-                    cuif.memtoreg = 0;
+                    cuif.alusrc  = 0;
+                    cuif.regsrc = 0;
                     //Registers
                     cuif.rsel1  = rtype.rs;
                     cuif.rsel2  = rtype.rt;
@@ -349,11 +331,10 @@ always_comb begin: CULogic
 
                     //ALU
                     cuif.aluop  = ALU_SLTU;
-                    cuif.wdat   = cuif.porto;
                 end
                 SLL  : begin
-                    cuif.irsel  = 1;
-                    cuif.memtoreg = 0;
+                    cuif.alusrc  = 1;
+                    cuif.regsrc = 0;
                     //Registers
                     cuif.rsel1  = rtype.rs;
                     cuif.wsel   = rtype.rd;
@@ -364,11 +345,10 @@ always_comb begin: CULogic
                     cuif.extop  = 0;
                     cuif.immed  = rtype.shamt;
                     cuif.aluop  = ALU_SLL;
-                    cuif.wdat   = cuif.porto;
                 end
                 SRL  : begin
-                    cuif.irsel  = 1;
-                    cuif.memtoreg = 0;
+                    cuif.alusrc  = 1;
+                    cuif.regsrc = 0;
                     //Registers
                     cuif.rsel1  = rtype.rs;
                     cuif.wsel   = rtype.rd;
@@ -379,11 +359,10 @@ always_comb begin: CULogic
                     cuif.extop  = 0;
                     cuif.immed  = rtype.shamt;
                     cuif.aluop  = ALU_SRL;
-                    cuif.wdat   = cuif.porto;
                 end
                 SUBU : begin
-                    cuif.irsel  = 0;
-                    cuif.memtoreg = 0;
+                    cuif.alusrc  = 0;
+                    cuif.regsrc = 0;
                     //Registers
                     cuif.rsel1  = rtype.rs;
                     cuif.rsel2  = rtype.rt;
@@ -393,11 +372,10 @@ always_comb begin: CULogic
 
                     //ALU
                     cuif.aluop  = ALU_SUB;
-                    cuif.wdat   = cuif.porto;
                 end
                 XOR  : begin
-                    cuif.irsel  = 0;
-                    cuif.memtoreg = 0;
+                    cuif.alusrc  = 0;
+                    cuif.regsrc = 0;
                     //Registers
                     cuif.rsel1  = rtype.rs;
                     cuif.rsel2  = rtype.rt;
@@ -407,11 +385,10 @@ always_comb begin: CULogic
 
                     //ALU
                     cuif.aluop  = ALU_XOR;
-                    cuif.wdat   = cuif.porto;
                 end
                 JR   : begin
-                    cuif.irsel  = 0;
-                    cuif.memtoreg = 0;
+                    cuif.alusrc  = 0;
+                    cuif.regsrc = 0;
                     //Registers
                     cuif.rsel1  = rtype.rs;
                     cuif.rsel2  = '0;
@@ -423,8 +400,8 @@ always_comb begin: CULogic
                     cuif.jraddr = cuif.porto;
                 end
                 default : begin
-                    cuif.irsel    = 0;
-                    cuif.memtoreg = 0;
+                    cuif.alusrc    = 0;
+                    cuif.regsrc = 0;
                     cuif.extop    = 0;
                     //Registers
                     cuif.rsel1  = '0;
