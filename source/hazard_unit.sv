@@ -25,7 +25,7 @@ import cpu_types_pkg::*;
 			if (hzif.ihit == 1) begin
 				hzif.dmemREN_out <= hzif.dmemREN_in;
 				hzif.dmemWEN_out <= hzif.dmemWEN_in;
-				hzif.pcsrc_out <= hzif.pcsrc_in;
+				// hzif.pcsrc_out <= hzif.pcsrc_in;
 			end else if (hzif.ihit == 0) begin
 				hzif.imemREN_out <= 1;
 				hzif.dmemREN_out <= 0;

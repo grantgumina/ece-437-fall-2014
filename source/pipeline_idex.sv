@@ -7,7 +7,6 @@ import cpu_types_pkg::*;
 	pipeline_if.idex plif_idex
 );
 
-
 	always_ff @ (posedge CLK) begin
 		if(!nRST) begin
 			//Register File
