@@ -14,10 +14,11 @@ interface pipeline_ifid_if;
   import cpu_types_pkg::*;
 
   logic  en;
+  logic	 sRST;
   word_t instr, instr_l;
 
   //if -> id
-  modport ifid (input en, instr, output instr_l);
+  modport ifid (input en, sRST, instr, output instr_l);
 
 endinterface
 
