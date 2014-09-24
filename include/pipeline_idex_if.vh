@@ -39,8 +39,7 @@ interface pipeline_idex_if;
   	input  wsel,   rdat1,   rdat2,   extimm,   alusrc,   aluop,   regsrc,   regen,   hlt,   dmemWEN,   dmemREN,		rambusy,
   	output wsel_l, rdat1_l, rdat2_l, extimm_l, alusrc_l, aluop_l, regsrc_l, regen_l, hlt_l, dmemWEN_l, dmemREN_l, rambusy_l
   );
-
-
+  
 endinterface
 
 `endif
