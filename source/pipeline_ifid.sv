@@ -10,7 +10,7 @@ import cpu_types_pkg::*;
 always @(posedge clk or negedge rst_n) begin
 	if(~nRST) begin
 		plif_ifid.instr_l <= 0;
-	end else if(en) begin
+	end else if(plif_ifid.en) begin
 		plif_ifid.instr_l <= plif_ifid.instr; 
 	end
 end

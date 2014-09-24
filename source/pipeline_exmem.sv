@@ -24,7 +24,7 @@ input logic CLK, nRST, en,
 		plif_exmem.vflag_l <= 0;
 		plif_exmem.pcsrc_dl <= 0;
 	end
-	else if(en) begin
+	else if(plif_exmem.en) begin
 		plif_exmem.portb_dl <= plif_exmem.portb_l;
 		plif_exmem.porto_l <= plif_exmem.porto;
 		plif_exmem.extimm_dl <= plif_exmem.extimm_l;
