@@ -26,11 +26,11 @@ interface hazard_unit_if;
   logic ihit;
   logic dhit;
   // will need these later for data hazard detection
-  // regbits_t ifidrs_l;
-  // regbits_t ifidrt_l;
-  // regbits_t idexrt_l;
-  // logic idexalusrc_l;
-  // logic idexdmemREN_l;
+  regbits_t ifid_rs_l;
+  regbits_t ifid_rt_l;
+  regbits_t idex_rt_l;
+  logic idex_alusrc_l;
+  logic idex_dmemREN_l;
   // outputs
   logic imemREN_out;
   logic dmemREN_out;
@@ -43,11 +43,10 @@ interface hazard_unit_if;
   //  modport
   modport hu (
     //---------------------------Inputs-----------------------------------------
-    input pcsrc_in, dmemREN_in, dmemWEN_in, ihit, dhit, regen_in,
-          ifidrt_l, ifidrs_l, idexrt_l, idexalusrc_l, idexdmemREN_l,
+    input pcsrc_in, dmemREN_in, dmemWEN_in, ihit,       dhit,  
+          regen_in, ifid_rt_l,  ifid_rs_l,  idex_rt_l,  idex_alusrc_l, idex_dmemREN_l,
     //--------------------------Outputs----------------------------------------
-    output imemREN_out, dmemREN_out, dmemWEN_out, regen_out, pcsrc_out,
-           pcen
+    output imemREN_out, dmemREN_out, dmemWEN_out, regen_out, pcen, hazen
   );
 
 endinterface

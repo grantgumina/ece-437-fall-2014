@@ -62,6 +62,13 @@ import cpu_types_pkg::*;
 	assign hzif.pcen = !hzif.ihit;
 
 	// data hazard detection code here
-	// TODO
+	always_comb begin
+		if (hzif.idex_dmemREN_l && 
+			(hzif.idex_rt_l == hzif.ifid_rs_l) || (hzif.idex_rt_l == hzif.ifid_rt_l)) begin
+			hzif.hazen = 1;
+		end else begin
+			hzif.hazen = 0;
+		end
+	end
 
 endmodule

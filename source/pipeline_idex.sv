@@ -30,7 +30,7 @@ import cpu_types_pkg::*;
 			plif_idex.dmemWEN_l <= 0;
 			//PC
 			plif_idex.pcsrc_l <= 0;
-		end else if(en) begin
+		end else if(plif_idex.en) begin
 			//Register
 			plif_idex.rd_l <= regbits_t'(plif_idex.rd);
 			plif_idex.rt_l <= regbits_t'(plif_idex.rt);

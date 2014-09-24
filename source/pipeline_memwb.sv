@@ -17,7 +17,7 @@ import cpu_types_pkg::*;
 			plif_memwb.halt_tl <= 0;
 			plif_memwb.regen_tl <= 0;
 			plif_memwb.regen_sel_tl <= 0;
-		end else if(en) begin
+		end else if(plif_memwb.en) begin
 			plif_memwb.wsel_dl <= plif_memwb.wsel_l;
 			plif_memwb.extimm_tl <= plif_memwb.extimm_dl;
 			plif_memwb.porto_dl <= plif_memwb.porto_l;

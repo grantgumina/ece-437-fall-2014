@@ -19,6 +19,7 @@ interface pipeline_exmem_if;
 	logic   regen, regen_l;
 	logic   [1:0] regsrc, regsrc_l;
 	logic   hlt, hlt_l;
+  logic   en;
 	logic   dmemWEN, dmemWEN_l;
 	logic   dmemREN, dmemREN_l;
 	logic   rambusy, rambusy_l; //Not sure about this signal. Request Unit is no longer part of the design
@@ -27,7 +28,7 @@ interface pipeline_exmem_if;
 
   // ex -> mem
   modport exmem (
-  	input  wsel,   rdat2,   regsrc,   regen,   hlt,   dmemWEN,   dmemREN,		rambusy,   porto,
+  	input  wsel,   rdat2,   regsrc,   regen,   hlt,   dmemWEN,   dmemREN,		rambusy,   porto,  en,
   	output wsel_l, rdat2_l, regsrc_l, regen_l, hlt_l, dmemWEN_l, dmemREN_l, rambusy_l, porto_l
   );
 
