@@ -69,6 +69,8 @@ module datapath (
 
   //if -> id
   assign plif_ifid.instr = dpif.imemload;
+  assign plif_ifid.sRST    = hzif.ifid_sRST;
+  assign plif_ifid.en      = hzif.ifid_en;
 
   //id
   assign cuif.instr  = plif_ifid.instr_l;
@@ -91,6 +93,8 @@ module datapath (
   end
 
   //id -> ex
+  assign plif_idex.sRST    = hzif.idex_sRST;
+  assign plif_idex.en      = hzif.idex_en;
   assign plif_idex.wsel    = cuif.wsel;
   assign plif_idex.rdat1   = rfif.rdat1;
   assign plif_idex.rdat2   = rfif.rdat2;
@@ -106,12 +110,23 @@ module datapath (
   assign plif_idex.rambusy = hzif.rambusy;
 
   //ex
-  assign aluoperand  = plif_idex.alusrc ? extimm : plif_idex.rdat2_l;
+  always_ff @ (posedge CLK, negedge nRST) begin
+    if (!nRST) 
+      dpif.imemREN <= 1;
+    else begin
+      if (cuif.halt) 
+        dpif.imemREN <= 0;
+    end
+  end
+
+  assign aluoperand  = plif_idex.alusrc_l ? plif_idex.extimm_l : plif_idex.rdat2_l;
   assign aluif.porta = plif_idex.rdat1_l;
   assign aluif.portb = aluoperand;
-  assign aluif.aluop = plif_idex.aluop;
+  assign aluif.aluop = plif_idex.aluop_l;
 
   //ex -> mem
+  assign plif_exmem.sRST    = hzif.exmem_sRST;
+  assign plif_exmem.en      = hzif.exmem_en;
   assign plif_exmem.wsel    = plif_idex.wsel_l;
   assign plif_exmem.rdat2   = plif_idex.rdat2_l;
   assign plif_exmem.regsrc  = plif_idex.regsrc_l;
@@ -125,14 +140,14 @@ module datapath (
   //mem
   assign dpif.dmemaddr        = plif_exmem.porto_l;
   assign dpif.dmemstore       = plif_exmem.rdat2_l;
-  //assign dpif.dmemREN         = plif_exmem.dmemREN_l;
-  //assign dpif.dmemWEN         = plif_exmem.dmemWEN_l;
+  assign dpif.dmemREN         = plif_exmem.dmemREN_l;
+  assign dpif.dmemWEN         = plif_exmem.dmemWEN_l;
   assign dpif.halt            = plif_exmem.hlt_l;
-  assign dpif.imemREN         = hzif.imemREN_out;
-  assign dpif.dmemREN         = hzif.dmemREN_out;
-  assign dpif.dmemWEN         = hzif.dmemWEN_out;
+
 
   //mem -> wb
+  assign plif_memwb.sRST      = hzif.memwb_sRST;
+  assign plif_memwb.en        = hzif.memwb_en;
   assign plif_memwb.wsel      = plif_exmem.wsel_l;
   assign plif_memwb.regsrc    = plif_exmem.regsrc_l;
   assign plif_memwb.regen     = plif_exmem.regen_l;
@@ -140,13 +155,10 @@ module datapath (
   assign plif_memwb.dmemload  = dpif.dmemload;
 
   // hazard unit
-  assign hzif.dmemREN_in      = plif_exmem.dmemREN_l;
-  assign hzif.dmemWEN_in      = plif_exmem.dmemWEN_l;
+  assign hzif.dmemREN         = plif_exmem.dmemREN_l;
+  assign hzif.dmemWEN         = plif_exmem.dmemWEN_l;
   assign hzif.ihit            = dpif.ihit;
   assign hzif.dhit            = dpif.dhit;
-  assign hzif.regen_in        = plif_memwb.regen_l;
-  assign hzif.idex_alusrc_l   = plif_idex.alusrc_l;
-  assign hzif.idex_dmemREN_l  = plif_idex.dmemREN_l;
 
   // pc
   assign pcif.rambusy = hzif.rambusy;
@@ -162,6 +174,7 @@ module datapath (
   end
 
   assign rfif.wdat = wdat;
+  assign rfif.wsel = plif_memwb.wsel_l;
 
   //Unused signals
   assign dpif.datomic   = '0;

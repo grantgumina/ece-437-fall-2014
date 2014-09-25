@@ -18,40 +18,39 @@ interface hazard_unit_if;
   //signal declarations
   // inputs
   // pcsrc_in, dmemREN_in, dmemWEN_in, regen_in all come from the control unit
-  logic dmemREN_in;
-  logic dmemWEN_in;
-  logic regen_in;
-  logic hazen;
+  logic dmemREN;
+  logic dmemWEN;
   logic ihit;
   logic dhit;
-  logic [2:0] pcsrc_in;
+  
   // will need these later for data hazard detection
   // Register
-  regbits_t rs;
-  regbits_t rt;
-  regbits_t idex_rt_l;
+  //regbits_t rs;
+  //regbits_t rt;
+  //regbits_t idex_rt_l;
   // ALU
-  logic idex_alusrc_l;
+  //logic idex_alusrc_l;
   // Memory
-  logic idex_dmemREN_l;
+  //logic exmem_dmemREN_l;
   // outputs
-  // Memory
-  logic imemREN_out;
-  logic dmemREN_out;
-  logic dmemWEN_out;
-  logic regen_out;
+  logic ifid_sRST, ifid_en;
+  logic idex_sRST, idex_en;
+  logic exmem_sRST, exmem_en;
+  logic memwb_sRST, memwb_en;
+
+  logic rambusy;
+  
   // required depending on how datapath is setup
   // logic [2:0] pcsrc_out;
   // PC
-  logic rambusy;
 
   //  modport
   modport hu (
     //---------------------------Inputs-----------------------------------------
-    input pcsrc_in, dmemREN_in, dmemWEN_in, ihit,       dhit,  
-          regen_in, rt,  rs,  idex_rt_l,  idex_alusrc_l, idex_dmemREN_l,
+    input dmemREN, dmemWEN, ihit, dhit, 
     //--------------------------Outputs----------------------------------------
-    output imemREN_out, dmemREN_out, dmemWEN_out, regen_out, rambusy, hazen
+    output ifid_sRST, idex_sRST, exmem_sRST, memwb_sRST, rambusy,
+           ifid_en,   idex_en,   exmem_en,   memwb_en     
   );
 
 endinterface
