@@ -5,7 +5,6 @@
   hazard unit
 */
 
-
 `include "cpu_types_pkg.vh"
 `include "hazard_unit_if.vh"
 
@@ -16,6 +15,73 @@ import cpu_types_pkg::*;
 	hazard_unit_if hzif
 );
 
+	always_ff @ (posedge CLK, negedge nRST) begin
+		if (~nRST) begin
+			hzif.ifid_sRST  <= 0;
+			hzif.ifid_en    <= 1;
+			hzif.idex_sRST  <= 0;
+			hzif.idex_en    <= 1;
+			hzif.exmem_sRST <= 0;
+			hzif.exmem_en   <= 1;
+			hzif.memwb_sRST <= 0;
+			hzif.memwb_en   <= 1;
+		end
+		else begin
+			if (hzif.dmemWEN || hzif.dmemREN) begin
+				hzif.ifid_sRST  <= 0;
+				hzif.ifid_en    <= 0; //stalling
+				hzif.idex_sRST  <= 0;
+				hzif.idex_en    <= 0; //stalling
+				hzif.exmem_sRST <= 0;
+				hzif.exmem_en   <= 0; //stalling
+				hzif.memwb_sRST <= 0; 
+				hzif.memwb_en   <= 1;
+			end
+			else if (hzif.dhit) begin
+				hzif.ifid_sRST  <= 0;
+				hzif.ifid_en    <= 0; //stalling
+				hzif.idex_sRST  <= 0;
+				hzif.idex_en    <= 1; //resume
+				hzif.exmem_sRST <= 1; //nopping
+				hzif.exmem_en   <= 0; 
+				hzif.memwb_sRST <= 0;
+				hzif.memwb_en   <= 1;
+			end
+			else if (hzif.ihit) begin
+				hzif.ifid_sRST  <= 0;
+				hzif.ifid_en    <= 1;
+				hzif.idex_sRST  <= 0;
+				hzif.idex_en    <= 1; //resuming
+				hzif.exmem_sRST <= 0; //resume
+				hzif.exmem_en   <= 1;	//resumed	
+				hzif.memwb_sRST <= 0;
+				hzif.memwb_en   <= 1;
+			end
+			else begin
+				hzif.ifid_sRST  <= 0;
+				hzif.ifid_en    <= 1;
+				hzif.idex_sRST  <= 0;
+				hzif.idex_en    <= 1;
+				hzif.exmem_sRST <= 0;
+				hzif.exmem_en   <= 1;
+				hzif.memwb_sRST <= 0;
+				hzif.memwb_en   <= 1;
+			end
+		end
+	end
+
+	assign hzif.rambusy = (hzif.dmemWEN || hzif.dmemREN) && !hzif.ihit;
+	
+
+endmodule
+
+
+
+
+
+
+
+/*
 	always_ff @ (posedge CLK or negedge nRST) begin
 		if(~nRST) begin
 			hzif.imemREN_out <= 1;
@@ -61,16 +127,7 @@ import cpu_types_pkg::*;
 		end
 	end
 
-	assign hzif.rambusy = !hzif.ihit;
 
-	// data hazard detection code here
-	// todo fix this
-	always_comb begin
-		if (hzif.idex_dmemREN_l && (hzif.idex_rt_l == hzif.rs) || (hzif.idex_rt_l == hzif.rt)) begin
-			hzif.hazen = 1;
-		end else begin
-			hzif.hazen = 0;
-		end
-	end
 
-endmodule
+*/
+

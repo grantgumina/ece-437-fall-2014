@@ -47,9 +47,18 @@
 # .main_pane.objects.interior.cs.body.tree
 #  do scripts/system.do 
 #  run -all 
+<<<<<<< HEAD
 # ERROR: cannot read meminit.hex.
 # Starting Processor.
 # Break key hit 
 # Break in Module caches at source/caches.sv line 50
 #  
 # Causality operation skipped due to absence of debug database file
+=======
+# Starting Processor.
+# Halted at 2600 time and ran for        129 cycles.
+# Starting memory dump.
+# Finished memory dump.
+# Break in Module test at testbench/system_tb.sv line 80
+#  
+>>>>>>> 18c64140d8e95bf82ccb42393cdfde489138c293

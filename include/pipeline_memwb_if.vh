@@ -19,7 +19,7 @@ interface pipeline_memwb_if;
   //logic   pcsrc, pcsrc_l; //These are not used for lab 5 (branches and jumps only)
   //logic [1:0] extimm, extimm_l; //Not used beyond execute phase due to lack of branches / jumps in lab 5
   //From Memory
-  logic   dmemload, dmemload_l;
+  word_t   dmemload, dmemload_l;
 
   // mem -> wb
   modport memwb (

@@ -25,7 +25,7 @@ interface pipeline_idex_if;
   //Datapath
   logic   alusrc, alusrc_l;
   logic   [1:0] regsrc, regsrc_l;
-  logic   [1:0] extimm, extimm_l;
+  word_t  extimm, extimm_l;
   //logic   pcsrc, pcsrc_l; //These are not used for lab 5 (branches and jumps only)
   //Memory
   logic   hlt, hlt_l;
