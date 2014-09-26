@@ -99,7 +99,6 @@ module datapath (
   assign plif_idex.aluop   = cuif.aluop;
   assign plif_idex.regsrc  = cuif.regsrc;
   assign plif_idex.regen   = cuif.WEN;
-//assign plif_idex.regen   = hzif.regen_out;
   assign plif_idex.hlt     = cuif.halt;
   assign plif_idex.dmemWEN = cuif.dWEN;
   assign plif_idex.dmemREN = cuif.dREN;
