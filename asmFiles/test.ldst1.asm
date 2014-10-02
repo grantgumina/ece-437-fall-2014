@@ -10,27 +10,12 @@
   ori   $4, $zero, 0x300
   ori   $5, $zero, 0x400
   lw    $6, 0($1)
-  nop
-  nop
-  nop
   lw    $7, 4($1)
-  nop
-  nop
-  nop
   lw    $8, 8($1)
-  nop
-  nop
-  nop
   ori   $4, $zero, 0x500
   ori   $5, $zero, 0x600
   sw    $6, 0($2)
-  nop
-  nop
-  nop
   sw    $7, 4($2)
-  nop
-  nop
-  nop
   sw    $8, 8($2)
   halt      # that's all
 

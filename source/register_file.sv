@@ -18,7 +18,7 @@ import cpu_types_pkg::*;
 
 word_t [31:0] register;
 
-always_ff @ (posedge CLK, negedge nRST) begin
+always_ff @ (negedge CLK, negedge nRST) begin
     if (!nRST)
         register <= '{default:0};
     else begin
