@@ -56,7 +56,7 @@
 # Causality operation skipped due to absence of debug database file
 =======
 # Starting Processor.
-# Halted at 2600 time and ran for        129 cycles.
+# Halted at 1680 time and ran for         83 cycles.
 # Starting memory dump.
 # Finished memory dump.
 # Break in Module test at testbench/system_tb.sv line 80

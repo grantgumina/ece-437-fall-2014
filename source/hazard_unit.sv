@@ -14,120 +14,92 @@ import cpu_types_pkg::*;
 	input CLK, nRST,
 	hazard_unit_if hzif
 );
+	assign hzif.rambusy = ~hzif.ifid_en || ((hzif.dmemWEN || hzif.dmemREN) && !hzif.ihit);
 
-	always_ff @ (posedge CLK, negedge nRST) begin
-		if (~nRST) begin
-			hzif.ifid_sRST  <= 0;
-			hzif.ifid_en    <= 1;
-			hzif.idex_sRST  <= 0;
-			hzif.idex_en    <= 1;
-			hzif.exmem_sRST <= 0;
-			hzif.exmem_en   <= 1;
-			hzif.memwb_sRST <= 0;
-			hzif.memwb_en   <= 1;
+	always_comb begin: MEMORY
+		hzif.ifid_sRST  = 0;
+		hzif.ifid_en    = 1;
+		hzif.idex_sRST  = 0;
+		hzif.idex_en    = 1;
+		hzif.exmem_sRST = 0;
+		hzif.exmem_en   = 1;
+		hzif.memwb_sRST = 0;
+		hzif.memwb_en   = 1;
+		if (hzif.dmemWEN || hzif.dmemREN) begin
+			hzif.ifid_sRST  = 0;
+			hzif.ifid_en    = 0; //stalling
+			hzif.idex_sRST  = 0;
+			hzif.idex_en    = 0; //stalling
+			hzif.exmem_sRST = 0;
+			hzif.exmem_en   = 0; //stalling
+			hzif.memwb_sRST = 0; 
+			hzif.memwb_en   = 1;
+			if (hzif.dhit) begin
+				hzif.ifid_sRST  = 0;
+				hzif.ifid_en    = 0; //stalling
+				hzif.idex_sRST  = 0;
+				hzif.idex_en    = 0; //stalling
+				hzif.exmem_sRST = 1; //nopping
+				hzif.exmem_en   = 0; 
+				hzif.memwb_sRST = 0;
+				hzif.memwb_en   = 1; 
+			end
+		end
+		/*
+		else if (hzif.ihit) begin //I'm like, 80% sure this else if block does nothing 
+			hzif.ifid_sRST  = 0; //everything resumes
+			hzif.ifid_en    = 1; 
+			hzif.idex_sRST  = 0;
+			hzif.idex_en    = 1; 
+			hzif.exmem_sRST = 0; 
+			hzif.exmem_en   = 1; 	
+			hzif.memwb_sRST = 0;
+			hzif.memwb_en   = 1;
 		end
 		else begin
-			if (hzif.dmemWEN || hzif.dmemREN) begin
-				hzif.ifid_sRST  <= 0;
-				hzif.ifid_en    <= 0; //stalling
-				hzif.idex_sRST  <= 0;
-				hzif.idex_en    <= 0; //stalling
-				hzif.exmem_sRST <= 0;
-				hzif.exmem_en   <= 0; //stalling
-				hzif.memwb_sRST <= 0; 
-				hzif.memwb_en   <= 1;
+			hzif.ifid_sRST  = 0;
+			hzif.ifid_en    = 1;
+			hzif.idex_sRST  = 0;
+			hzif.idex_en    = 1;
+			hzif.exmem_sRST = 0;
+			hzif.exmem_en   = 1;
+			hzif.memwb_sRST = 0;
+			hzif.memwb_en   = 1;
+		end
+
+		*/
+		//THE FOLLOWING IS DATA HAZARD CONTROL
+		if (hzif.wsel_ex) begin //If a write is attempted in the EXECUTE phase
+			if (hzif.wsel_ex == hzif.rsel1_id || hzif.wsel_ex == hzif.rsel2_id) begin
+				hzif.ifid_sRST  = 0;
+				hzif.ifid_en    = 0; //Stall ifid
+				hzif.idex_sRST  = 1; //Nop 	 idex
+				hzif.idex_en    = 1;
+				hzif.exmem_sRST = 0;
+				hzif.exmem_en   = 1;
+				hzif.memwb_sRST = 0;
+				hzif.memwb_en   = 1;
 			end
-			else if (hzif.dhit) begin
-				hzif.ifid_sRST  <= 0;
-				hzif.ifid_en    <= 0; //stalling
-				hzif.idex_sRST  <= 0;
-				hzif.idex_en    <= 1; //resume
-				hzif.exmem_sRST <= 1; //nopping
-				hzif.exmem_en   <= 0; 
-				hzif.memwb_sRST <= 0;
-				hzif.memwb_en   <= 1;
-			end
-			else if (hzif.ihit) begin
-				hzif.ifid_sRST  <= 0;
-				hzif.ifid_en    <= 1;
-				hzif.idex_sRST  <= 0;
-				hzif.idex_en    <= 1; //resuming
-				hzif.exmem_sRST <= 0; //resume
-				hzif.exmem_en   <= 1;	//resumed	
-				hzif.memwb_sRST <= 0;
-				hzif.memwb_en   <= 1;
-			end
-			else begin
-				hzif.ifid_sRST  <= 0;
-				hzif.ifid_en    <= 1;
-				hzif.idex_sRST  <= 0;
-				hzif.idex_en    <= 1;
-				hzif.exmem_sRST <= 0;
-				hzif.exmem_en   <= 1;
-				hzif.memwb_sRST <= 0;
-				hzif.memwb_en   <= 1;
+		end
+		else if (hzif.wsel_mem) begin //when the instr moves to the MEM phase
+			if (hzif.wsel_mem == hzif.rsel1_id || hzif.wsel_mem == hzif.rsel2_id) begin
+				hzif.ifid_sRST  = 0;
+				hzif.ifid_en    = 0; //Stall ifid
+				hzif.idex_sRST  = 1; //Nop   idex 
+				hzif.idex_en    = 1; 
+				hzif.exmem_sRST = 0;
+				hzif.exmem_en   = 1;
+				hzif.memwb_sRST = 0;
+				hzif.memwb_en   = 1;			
 			end
 		end
 	end
+/*
+hzif.wsel_ex:  the Register write location from the EXECUTE phase
+hzif.wsel_mem: the Register write location from the MEMORY phase
+hzif.wsel_wb:  the Register write location from the WRITE BACK phase
 
-	assign hzif.rambusy = (hzif.dmemWEN || hzif.dmemREN) && !hzif.ihit;
-	
+hzif.rsel1_id: the first Register read select from the DECODE phase
+hzif.rsel2_id: the second Register read select from the DECODE phase */
 
 endmodule
-
-
-
-
-
-
-
-/*
-	always_ff @ (posedge CLK or negedge nRST) begin
-		if(~nRST) begin
-			hzif.imemREN_out <= 1;
-			hzif.dmemREN_out <= 0;
-			hzif.dmemWEN_out <= 0;
-			hzif.ifid_sRST <= 0;
-		end else begin
-			if (hzif.ihit == 1) begin
-				hzif.dmemREN_out <= hzif.dmemREN_in;
-				hzif.dmemWEN_out <= hzif.dmemWEN_in;
-				// hzif.pcsrc_out <= hzif.pcsrc_in;
-			end else if (hzif.ihit == 0) begin
-				hzif.imemREN_out <= 1;
-				hzif.dmemREN_out <= 0;
-				hzif.dmemWEN_out <= 0;
-				if (hzif.dmemREN_in == 1 && hzif.dmemWEN_in == 0) begin
-					hzif.imemREN_out <= 1;
-					hzif.dmemREN_out <= 1;
-					hzif.dmemWEN_out <= 0;
-				end else if (hzif.dmemREN_in == 0 && hzif.dmemWEN_in == 1) begin
-					hzif.imemREN_out <= 1;
-					hzif.dmemREN_out <= 0;
-					hzif.dmemWEN_out <= 1;
-				end
-			end else if (hzif.dhit == 1) begin // same case as nRST
-				hzif.imemREN_out <= 1;
-				hzif.dmemREN_out <= 0;
-				hzif.dmemWEN_out <= 0;
-				hzif.ifid_sRST <= 1;
-			end
-		end
-	end
-
-	always_ff @ (posedge CLK or negedge nRST) begin
-		if (~nRST) begin
-			hzif.regen_out <= 0;
-		end else begin
-			if (hzif.ihit == 1) begin
-				hzif.regen_out <= hzif.regen_in;
-			end else begin
-				hzif.regen_out <= 0;
-			end
-		end
-	end
-
-
-
-*/
-

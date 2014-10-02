@@ -74,7 +74,7 @@ module datapath (
 
   //id
   assign cuif.instr  = plif_ifid.instr_l;
-  assign rfif.WEN    = cuif.WEN;
+  assign rfif.WEN    = plif_memwb.regen_l;
   assign rfif.rsel1  = cuif.rsel1; 
   assign rfif.rsel2  = cuif.rsel2;
   
@@ -158,7 +158,10 @@ module datapath (
   assign hzif.dmemWEN         = plif_exmem.dmemWEN_l;
   assign hzif.ihit            = dpif.ihit;
   assign hzif.dhit            = dpif.dhit;
-
+  assign hzif.wsel_ex         = plif_idex.wsel_l; 
+  assign hzif.wsel_mem        = plif_exmem.wsel_l;
+  assign hzif.rsel1_id        = cuif.rsel1;
+  assign hzif.rsel2_id        = cuif.rsel2;
   // pc
   assign pcif.rambusy = hzif.rambusy;
 

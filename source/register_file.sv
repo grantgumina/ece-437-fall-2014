@@ -19,11 +19,11 @@ import cpu_types_pkg::*;
 word_t [31:0] register;
 
 always_ff @ (negedge CLK, negedge nRST) begin
-  if (!nRST)
-      register <= '{default:0};
-  else begin
-    if (rfif.WEN)
-      register[rfif.wsel] <= rfif.wsel ? rfif.wdat : '0;
+    if (!nRST)
+        register <= '{default:0};
+    else begin
+        if (rfif.WEN)
+            register[rfif.wsel] <= rfif.wsel ? rfif.wdat : '0;
     end
 end
 

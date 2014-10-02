@@ -323,19 +323,23 @@ add wave -noupdate -group aluif /system_tb/DUT/CPU/DP/aluif/aluop
 add wave -noupdate -group aluif /system_tb/DUT/CPU/DP/aluif/porta
 add wave -noupdate -group aluif /system_tb/DUT/CPU/DP/aluif/portb
 add wave -noupdate -group aluif /system_tb/DUT/CPU/DP/aluif/porto
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/dmemREN
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/dmemWEN
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/ihit
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/dhit
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/ifid_sRST
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/ifid_en
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/idex_sRST
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/idex_en
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/exmem_sRST
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/exmem_en
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/memwb_sRST
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/memwb_en
-add wave -noupdate -group hzif /system_tb/DUT/CPU/DP/hzif/rambusy
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/wsel_ex
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/wsel_mem
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/rsel1_id
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/rsel2_id
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/dmemREN
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/dmemWEN
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/ihit
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/dhit
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/ifid_sRST
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/ifid_en
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/idex_sRST
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/idex_en
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/exmem_sRST
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/exmem_en
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/memwb_sRST
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/memwb_en
+add wave -noupdate -expand -group hzif /system_tb/DUT/CPU/DP/hzif/rambusy
 add wave -noupdate -divider {memory controller}
 add wave -noupdate -group {mem controller} /system_tb/DUT/CPU/ccif/iwait
 add wave -noupdate -group {mem controller} /system_tb/DUT/CPU/ccif/dwait
@@ -359,7 +363,7 @@ add wave -noupdate -group {mem controller} -radix decimal /system_tb/DUT/CPU/cci
 add wave -noupdate -group {mem controller} /system_tb/DUT/CPU/ccif/ramstore
 add wave -noupdate -group {mem controller} /system_tb/DUT/CPU/ccif/ramload
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {400000 ps} 0}
+WaveRestoreCursors {{Cursor 1} {127751 ps} 0}
 quietly wave cursor active 1
 >>>>>>> 18c64140d8e95bf82ccb42393cdfde489138c293
 configure wave -namecolwidth 150
@@ -377,7 +381,11 @@ configure wave -timeline 0
 configure wave -timelineunits ns
 update
 <<<<<<< HEAD
+<<<<<<< HEAD
 WaveRestoreZoom {0 ps} {884 ps}
 =======
 WaveRestoreZoom {0 ps} {554044 ps}
 >>>>>>> 18c64140d8e95bf82ccb42393cdfde489138c293
+=======
+WaveRestoreZoom {0 ps} {930836 ps}
+>>>>>>> 929c6a2c5c678e59026dea679e124af33c8ff34b
