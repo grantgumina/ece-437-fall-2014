@@ -74,7 +74,7 @@ module datapath (
 
   //id
   assign cuif.instr  = plif_ifid.instr_l;
-  assign rfif.WEN    = plif_memwb.regen_l;
+  assign rfif.WEN    = plif_memwb.regen_l; //AHAHAHAHAH THIS WAS ASSIGNED TO CUIF.WEN WTF?!?! RETARDED BUG FIXES FTW
   assign rfif.rsel1  = cuif.rsel1; 
   assign rfif.rsel2  = cuif.rsel2;
   
