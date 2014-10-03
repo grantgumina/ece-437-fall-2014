@@ -22,13 +22,14 @@ interface pc_if;
   word_t extimm;
   //j_t jump;
   logic [ADDR_W-1:0] jaddr;
-  word_t imemaddr, jraddr, rtnaddr;
+  word_t imemaddr, jraddr, rtnaddr, pcplus4;
 
   //  modport
   modport pc (
    //--------------------------Inputs--------------------------------------------
     input  pcsrc, rambusy,
            extimm, jaddr, jraddr,
+           pcplus4,
     //-------------------------Outputs-------------------------------------------
     output imemaddr, rtnaddr
   );

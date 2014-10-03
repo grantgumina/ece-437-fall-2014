@@ -119,7 +119,7 @@ module datapath (
     if (!nRST) 
       dpif.imemREN <= 1;
     else begin
-      if (cuif.halt) 
+      if (plif_idex.hlt_l) 
         dpif.imemREN <= 0;
     end
   end
@@ -183,7 +183,7 @@ module datapath (
   assign hzif.rsel2_id        = cuif.rsel2;
   assign hzif.pcsrc_ex        = plif_idex.pcsrc_l;
   assign hzif.pcsrc_mem       = plif_exmem.pcsrc_l;
-  //assign hzif.pcsrc_wb        = plif_memwb.pcsrc_l;
+  assign hzif.pcsrc_wb        = plif_memwb.pcsrc_l;
   // pc
   assign pcif.rambusy = hzif.rambusy;
 
@@ -194,16 +194,18 @@ module datapath (
     else if (plif_memwb.regsrc_l == 1)
       wdat = plif_memwb.dmemload_l;
     else
-      wdat = plif_memwb.rtnaddr_l; //not sure what to do about this right now
+      wdat = plif_memwb.rtnaddr_l;
   end
 
   assign rfif.wdat = wdat;
   assign rfif.wsel = plif_memwb.wsel_l;
 
   //PC stuff for branches and jumps
+  assign pcif.pcplus4         = plif_memwb.rtnaddr_l;
   assign pcif.extimm          = plif_memwb.extimm_l;
   assign pcif.jaddr           = plif_memwb.jaddr_l;
   assign pcif.jraddr          = plif_memwb.jraddr_l;
+  assign hzif.brtkn            = pcif.pcsrc ? 1:0;
 
 always_comb begin //the decider
   if (plif_memwb.pcsrc_l == 1) begin

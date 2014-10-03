@@ -32,14 +32,15 @@ interface hazard_unit_if;
   logic memwb_sRST, memwb_en;
 
   logic [1:0] pcsrc_ex, pcsrc_mem;
-  //logic [1:0] pcsrc_wb;
+  logic [1:0] pcsrc_wb;
+  logic brtkn;
 
   logic rambusy;
   
   //  modport
   modport hu (
     //---------------------------Inputs-----------------------------------------
-    input dmemREN, dmemWEN, ihit, dhit, wsel_ex, wsel_mem, rsel1_id, rsel2_id, pcsrc_ex, pcsrc_mem, //pcsrc_wb,
+    input dmemREN, dmemWEN, ihit, dhit, wsel_ex, wsel_mem, rsel1_id, rsel2_id, pcsrc_ex, pcsrc_mem, pcsrc_wb, brtkn,
     //--------------------------Outputs----------------------------------------
     output ifid_sRST, idex_sRST, exmem_sRST, memwb_sRST, rambusy,
            ifid_en,   idex_en,   exmem_en,   memwb_en     

@@ -24,7 +24,7 @@ import cpu_types_pkg::*;
 );
 	assign hzif.rambusy = ~hzif.ifid_en || ((hzif.dmemWEN || hzif.dmemREN) && !hzif.ihit);
 
-	always_comb begin: MEMORY
+	always_comb begin
 		hzif.ifid_sRST  = 0;
 		hzif.ifid_en    = 1;
 		hzif.idex_sRST  = 0;
@@ -33,6 +33,8 @@ import cpu_types_pkg::*;
 		hzif.exmem_en   = 1;
 		hzif.memwb_sRST = 0;
 		hzif.memwb_en   = 1;
+		
+		//MEMORY HAZARD CONTROL
 		if (hzif.dmemWEN || hzif.dmemREN) begin
 			hzif.ifid_sRST  = 0;
 			hzif.ifid_en    = 0; //stalling
@@ -54,7 +56,7 @@ import cpu_types_pkg::*;
 			end
 		end
 		
-		//THE FOLLOWING IS DATA HAZARD CONTROL
+		//DATA HAZARD CONTROL
 		if (hzif.wsel_ex) begin //If a write is attempted in the EXECUTE phase
 			if (hzif.wsel_ex == hzif.rsel1_id || hzif.wsel_ex == hzif.rsel2_id) begin
 				hzif.ifid_sRST  = 0;
@@ -82,8 +84,8 @@ import cpu_types_pkg::*;
 		
 		// CONTROL FLOW HAZARD
 		if (hzif.pcsrc_ex) begin //If a write is attempted in the EXECUTE phase
-			hzif.ifid_sRST  = 0;
-			hzif.ifid_en    = 0; //Stall ifid
+			hzif.ifid_sRST  = 0; 
+			hzif.ifid_en    = 0; //Stall ifid to stall PC
 			hzif.idex_sRST  = 1; //Nop 	 idex
 			hzif.idex_en    = 1;
 			hzif.exmem_sRST = 0;
@@ -92,7 +94,7 @@ import cpu_types_pkg::*;
 			hzif.memwb_en   = 1;
 		end
 		else if (hzif.pcsrc_mem) begin //when the instr moves to the MEM phase
-			hzif.ifid_sRST  = 1;
+			hzif.ifid_sRST  = 0; 
 			hzif.ifid_en    = 0; //Stall ifid
 			hzif.idex_sRST  = 1; //Nop 	 idex
 			hzif.idex_en    = 1;
@@ -101,16 +103,25 @@ import cpu_types_pkg::*;
 			hzif.memwb_sRST = 0;
 			hzif.memwb_en   = 1;
 		end
-		/*
-		else if (hzif.pcsrc_wb) begin //when the instr moves to the MEM phase
+		else if (hzif.pcsrc_wb && hzif.brtkn) begin //when the instr moves to the WB phase
 			hzif.ifid_sRST  = 1; //Nop   ifid
-			hzif.ifid_en    = 1; 
+			hzif.ifid_en    = 1; //Resume PC 
 			hzif.idex_sRST  = 1; //Nop 	 idex
 			hzif.idex_en    = 1;
 			hzif.exmem_sRST = 0;
 			hzif.exmem_en   = 1;
 			hzif.memwb_sRST = 0;
 			hzif.memwb_en   = 1;
-		end */
+		end 
+		else if (hzif.pcsrc_wb && ~hzif.brtkn) begin //when the instr moves to the WB phase
+			hzif.ifid_sRST  = 0; 
+			hzif.ifid_en    = 1; //Resume PC 
+			hzif.idex_sRST  = 1; //Nop 	 idex
+			hzif.idex_en    = 1;
+			hzif.exmem_sRST = 0;
+			hzif.exmem_en   = 1;
+			hzif.memwb_sRST = 0;
+			hzif.memwb_en   = 1;
+		end 		
 	end
 endmodule
