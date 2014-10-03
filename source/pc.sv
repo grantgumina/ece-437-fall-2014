@@ -34,10 +34,7 @@ always_comb begin: PCLogic
         PCregN = PCreg;
     else begin
         if (pcif.pcsrc == 1) begin //branch
-            if (pcif.immed[15])
-                PCregN = PCplus4 + {14'b11111111111111,pcif.immed,2'b00};
-            else
-                PCregN = PCplus4 + {14'b00000000000000,pcif.immed,2'b00};
+            PCregN = PCplus4 + {pcif.extimm[29:0], 2'b00};
         end
         else if (pcif.pcsrc == 2) //jtype
             PCregN = {PCplus4[31:28],pcif.jaddr,2'b00};

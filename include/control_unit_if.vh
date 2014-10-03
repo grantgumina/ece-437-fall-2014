@@ -20,7 +20,8 @@ interface control_unit_if;
   //PC
   logic     [1:0] pcsrc;
   word_t    jraddr;
-  logic [ADDR_W-1:0] jaddr;
+  logic     [ADDR_W-1:0] jaddr;
+  logic     btype;
 
   //ALU
   aluop_t   aluop;
@@ -57,7 +58,7 @@ interface control_unit_if;
     //--------------------------Outputs--------------------------------------------
     output
     //to PC
-    pcsrc, immed, jaddr, jraddr,
+    pcsrc, immed, jaddr, jraddr, btype,
     //to ALU
     aluop,
     //to Register

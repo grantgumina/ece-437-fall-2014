@@ -19,7 +19,7 @@ interface pc_if;
   logic [1:0] pcsrc;
   logic rambusy;
   //i_t itype;
-  logic [IMM_W-1:0] immed;
+  word_t extimm;
   //j_t jump;
   logic [ADDR_W-1:0] jaddr;
   word_t imemaddr, jraddr, rtnaddr;
@@ -28,7 +28,7 @@ interface pc_if;
   modport pc (
    //--------------------------Inputs--------------------------------------------
     input  pcsrc, rambusy,
-           immed, jaddr, jraddr,
+           extimm, jaddr, jraddr,
     //-------------------------Outputs-------------------------------------------
     output imemaddr, rtnaddr
   );

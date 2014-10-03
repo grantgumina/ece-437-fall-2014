@@ -13,9 +13,6 @@ interface pipeline_idex_if;
   logic   en;
   logic   sRST;
   //Register File
-  regbits_t rd, rd_l;
-  regbits_t rt, rt_l;
-  regbits_t rs, rs_l;
   regbits_t wsel, wsel_l; //This is the register write location determined by the Control Unit (not DP muxes)
   logic     regen, regen_l;
   //ALU
@@ -25,8 +22,14 @@ interface pipeline_idex_if;
   //Datapath
   logic   alusrc, alusrc_l;
   logic   [1:0] regsrc, regsrc_l;
+  logic   [1:0] pcsrc, pcsrc_l; //These are not used for lab 5 (branches and jumps only)
   word_t  extimm, extimm_l;
-  //logic   pcsrc, pcsrc_l; //These are not used for lab 5 (branches and jumps only)
+  logic   btype, btype_l;
+  word_t  rtnaddr, rtnaddr_l;
+
+  word_t    jraddr, jraddr_l;
+  logic     [ADDR_W-1:0] jaddr, jaddr_l;
+  
   //Memory
   logic   hlt, hlt_l;
   logic   dmemWEN, dmemWEN_l;
@@ -36,8 +39,8 @@ interface pipeline_idex_if;
 
   // id -> ex
   modport idex (
-  	input  wsel,   rdat1,   rdat2,   extimm,   alusrc,   aluop,   regsrc,   regen,   hlt,   dmemWEN,   dmemREN,		rambusy,   rs,   rt,   rd,  en, sRST,
-  	output wsel_l, rdat1_l, rdat2_l, extimm_l, alusrc_l, aluop_l, regsrc_l, regen_l, hlt_l, dmemWEN_l, dmemREN_l, rambusy_l, rs_l, rt_l, rd_l
+  	input  wsel,   rdat1,   rdat2,   alusrc,   aluop,   regsrc,   regen,   hlt,   dmemWEN,   dmemREN,		rambusy,   pcsrc,   extimm,   btype,   jaddr,   jraddr,   rtnaddr,  en, sRST,
+  	output wsel_l, rdat1_l, rdat2_l, alusrc_l, aluop_l, regsrc_l, regen_l, hlt_l, dmemWEN_l, dmemREN_l, rambusy_l, pcsrc_l, extimm_l, btype_l, jaddr_l, jraddr_l, rtnaddr_l
   );
   
 endinterface

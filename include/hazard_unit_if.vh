@@ -15,7 +15,7 @@ interface hazard_unit_if;
   // import types
   import cpu_types_pkg::*;
 
-  //signal declarations
+  // signal declarations
   // inputs
   // pcsrc_in, dmemREN_in, dmemWEN_in, regen_in all come from the control unit
   logic dmemREN;
@@ -24,32 +24,22 @@ interface hazard_unit_if;
   logic dhit;
   
   regbits_t wsel_ex, wsel_mem, rsel1_id, rsel2_id; //data hazard detection
-  
-  // Register
-  //regbits_t rs;
-  //regbits_t rt;
-  //regbits_t idex_rt_l;
-  // ALU
-  //logic idex_alusrc_l;
-  // Memory
-  //logic exmem_dmemREN_l;
-  // outputs
 
+  // outputs
   logic ifid_sRST, ifid_en;
   logic idex_sRST, idex_en;
   logic exmem_sRST, exmem_en;
   logic memwb_sRST, memwb_en;
 
+  logic [1:0] pcsrc_ex, pcsrc_mem;
+  //logic [1:0] pcsrc_wb;
+
   logic rambusy;
   
-  // required depending on how datapath is setup
-  // logic [2:0] pcsrc_out;
-  // PC
-
   //  modport
   modport hu (
     //---------------------------Inputs-----------------------------------------
-    input dmemREN, dmemWEN, ihit, dhit, wsel_ex, wsel_mem, rsel1_id, rsel2_id,
+    input dmemREN, dmemWEN, ihit, dhit, wsel_ex, wsel_mem, rsel1_id, rsel2_id, pcsrc_ex, pcsrc_mem, //pcsrc_wb,
     //--------------------------Outputs----------------------------------------
     output ifid_sRST, idex_sRST, exmem_sRST, memwb_sRST, rambusy,
            ifid_en,   idex_en,   exmem_en,   memwb_en     

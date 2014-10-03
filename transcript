@@ -46,19 +46,12 @@
 # view objects 
 # .main_pane.objects.interior.cs.body.tree
 #  do scripts/system.do 
+# ** Error: (vish-4014) No objects found matching '/system_tb/DUT/CPU/DP/hzif/pcsrc_wb'.
+# Executing ONERROR command at macro ./scripts/system.do line 179
 #  run -all 
-<<<<<<< HEAD
-# ERROR: cannot read meminit.hex.
 # Starting Processor.
-# Break key hit 
-# Break in Module caches at source/caches.sv line 50
-#  
-# Causality operation skipped due to absence of debug database file
-=======
-# Starting Processor.
-# Halted at 1680 time and ran for         83 cycles.
+# Halted at 560 time and ran for         27 cycles.
 # Starting memory dump.
 # Finished memory dump.
 # Break in Module test at testbench/system_tb.sv line 80
 #  
->>>>>>> 18c64140d8e95bf82ccb42393cdfde489138c293
