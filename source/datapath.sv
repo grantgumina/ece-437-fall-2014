@@ -137,7 +137,7 @@ module datapath (
   assign plif_exmem.sRST      = hzif.exmem_sRST;
   assign plif_exmem.en        = hzif.exmem_en;
   assign plif_exmem.wsel      = plif_idex.wsel_l;
-  assign plif_exmem.rdat2     = plif_idex.rdat2_l;
+  //assign plif_exmem.rdat2     = plif_idex.rdat2_l;
   assign plif_exmem.regsrc    = plif_idex.regsrc_l;
   assign plif_exmem.regen     = plif_idex.regen_l;
   assign plif_exmem.hlt       = plif_idex.hlt_l;
@@ -177,12 +177,15 @@ module datapath (
   assign plif_memwb.rtnaddr   = plif_exmem.rtnaddr_l;  
   
   // hazard unit
+  //load-use hazard
+  assign hzif.dREN_ex         = plif_idex.dmemREN_l;
+
   assign hzif.dmemREN         = plif_exmem.dmemREN_l;
   assign hzif.dmemWEN         = plif_exmem.dmemWEN_l;
   assign hzif.ihit            = dpif.ihit;
   assign hzif.dhit            = dpif.dhit;
   assign hzif.wsel_ex         = plif_idex.wsel_l; 
-  assign hzif.wsel_mem        = plif_exmem.wsel_l;
+  //assign hzif.wsel_mem        = plif_exmem.wsel_l;
   assign hzif.rsel1_id        = cuif.rsel1;
   assign hzif.rsel2_id        = cuif.rsel2;
   assign hzif.pcsrc_ex        = plif_idex.pcsrc_l;
@@ -239,7 +242,7 @@ assign fuif.idexalusrc = plif_idex.alusrc_l;
 //forwarding unit muxes
 always_comb begin
   if (fuif.fwda == 2) begin //from exmem (memory)
-    aluif.porta = plif_exmem.porto;
+    aluif.porta = plif_exmem.porto_l;
   end
   else if (fuif.fwda == 1) begin //from memwb (write back)
     aluif.porta = wdat;
@@ -251,7 +254,7 @@ end
 
 always_comb begin
   if (fuif.fwdb == 2) begin
-    aluif.portb = plif_exmem.porto;
+    aluif.portb = plif_exmem.porto_l;
   end
   else if (fuif.fwdb == 1) begin
     aluif.portb = wdat;
@@ -260,6 +263,19 @@ always_comb begin
     aluif.portb = aluoperand;
   end
 end 
+
+always_comb begin
+  if (fuif.fwdc == 2) begin
+    plif_exmem.rdat2 = plif_exmem.porto_l;
+  end
+  else if (fuif.fwdc == 1) begin
+    plif_exmem.rdat2 = wdat;
+  end
+  else begin
+    plif_exmem.rdat2 = plif_idex.rdat2_l;
+  end
+end
+
 
   //Unused signals
   assign dpif.datomic   = '0;

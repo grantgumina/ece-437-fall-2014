@@ -22,6 +22,8 @@ interface hazard_unit_if;
   logic dmemWEN;
   logic ihit;
   logic dhit;
+
+  logic dREN_ex;
   
   regbits_t wsel_ex, wsel_mem, rsel1_id, rsel2_id; //data hazard detection
 
@@ -40,7 +42,7 @@ interface hazard_unit_if;
   //  modport
   modport hu (
     //---------------------------Inputs-----------------------------------------
-    input dmemREN, dmemWEN, ihit, dhit, wsel_ex, wsel_mem, rsel1_id, rsel2_id, pcsrc_ex, pcsrc_mem, pcsrc_wb, brtkn,
+    input dREN_ex, dmemREN, dmemWEN, ihit, dhit, wsel_ex, wsel_mem, rsel1_id, rsel2_id, pcsrc_ex, pcsrc_mem, pcsrc_wb, brtkn,
     //--------------------------Outputs----------------------------------------
     output ifid_sRST, idex_sRST, exmem_sRST, memwb_sRST, rambusy,
            ifid_en,   idex_en,   exmem_en,   memwb_en     

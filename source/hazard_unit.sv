@@ -35,6 +35,18 @@ import cpu_types_pkg::*;
 		hzif.memwb_en   = 1;
 		
 		//MEMORY HAZARD CONTROL
+
+		if ((hzif.dREN_ex) && //if lw in execute phase and write reg equals either source reg in decode
+			(hzif.wsel_ex == hzif.rsel1_id || hzif.wsel_ex == hzif.rsel2_id)) begin
+			hzif.ifid_sRST  = 0;
+			hzif.ifid_en    = 0; //stalling
+			hzif.idex_sRST  = 1; //nopping
+			hzif.idex_en    = 0; //stalling
+			hzif.exmem_sRST = 0;
+			hzif.exmem_en   = 1; //stalling (jk not really)
+			hzif.memwb_sRST = 0; 
+			hzif.memwb_en   = 1;
+		end 
 		if (hzif.dmemWEN || hzif.dmemREN) begin
 			hzif.ifid_sRST  = 0;
 			hzif.ifid_en    = 0; //stalling
@@ -47,15 +59,19 @@ import cpu_types_pkg::*;
 			if (hzif.dhit) begin
 				hzif.ifid_sRST  = 0;
 				hzif.ifid_en    = 0; //stalling
-				hzif.idex_sRST  = 0;
-				hzif.idex_en    = 0; //stalling
-				hzif.exmem_sRST = 1; //nopping
-				hzif.exmem_en   = 0; 
+				hzif.idex_sRST  = 1; //nopping
+				hzif.idex_en    = 1; 
+				hzif.exmem_sRST = 0; 
+				hzif.exmem_en   = 1; //resuming
 				hzif.memwb_sRST = 0;
 				hzif.memwb_en   = 1; 
 			end
 		end
-		
+
+
+
+
+		/*
 		//DATA HAZARD CONTROL
 		if (hzif.wsel_ex) begin //If a write is attempted in the EXECUTE phase
 			if (hzif.wsel_ex == hzif.rsel1_id || hzif.wsel_ex == hzif.rsel2_id) begin
@@ -80,7 +96,7 @@ import cpu_types_pkg::*;
 				hzif.memwb_sRST = 0;
 				hzif.memwb_en   = 1;			
 			end
-		end 
+		end */
 		
 		// CONTROL FLOW HAZARD
 		if (hzif.pcsrc_ex) begin //If a write is attempted in the EXECUTE phase
@@ -116,7 +132,7 @@ import cpu_types_pkg::*;
 		else if (hzif.pcsrc_wb && ~hzif.brtkn) begin //when the instr moves to the WB phase
 			hzif.ifid_sRST  = 0; 
 			hzif.ifid_en    = 1; //Resume PC 
-			hzif.idex_sRST  = 1; //Nop 	 idex
+			hzif.idex_sRST  = 0; //Nop Nop idex
 			hzif.idex_en    = 1;
 			hzif.exmem_sRST = 0;
 			hzif.exmem_en   = 1;
