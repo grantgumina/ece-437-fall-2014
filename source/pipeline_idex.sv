@@ -10,9 +10,6 @@ import cpu_types_pkg::*;
 	always_ff @ (posedge CLK, negedge nRST) begin
 		if(~nRST || plif_idex.sRST) begin
 			//Register File
-			plif_idex.rd_l <= regbits_t'(0);
-			plif_idex.rt_l <= regbits_t'(0);
-			plif_idex.rs_l <= regbits_t'(0);
 			plif_idex.wsel_l <= 0;
 			plif_idex.regen_l <= 0;
 			//ALU
@@ -23,6 +20,11 @@ import cpu_types_pkg::*;
 			plif_idex.extimm_l <= 0;
 			plif_idex.alusrc_l <= 0;
 			plif_idex.regsrc_l <= 0;
+			plif_idex.pcsrc_l  <= 0;
+			plif_idex.btype_l  <= 0;
+			plif_idex.jaddr_l  <= 0;
+			plif_idex.jraddr_l <= 0;
+			plif_idex.rtnaddr_l <= 0;
 			//Memory
 			plif_idex.hlt_l <= 0;
 			plif_idex.dmemREN_l <= 0;
@@ -30,9 +32,6 @@ import cpu_types_pkg::*;
 			plif_idex.rambusy_l <= 0;
 		end else if(plif_idex.en) begin
 			//Register
-			plif_idex.rd_l <= plif_idex.rd;
-			plif_idex.rt_l <= plif_idex.rt;
-			plif_idex.rs_l <= plif_idex.rs;
 			plif_idex.wsel_l <= plif_idex.wsel;
 			plif_idex.regen_l <= plif_idex.regen;
 			//ALU
@@ -43,6 +42,11 @@ import cpu_types_pkg::*;
 			plif_idex.extimm_l <= plif_idex.extimm;
 			plif_idex.alusrc_l <= plif_idex.alusrc;
 			plif_idex.regsrc_l <= plif_idex.regsrc;
+			plif_idex.pcsrc_l  <= plif_idex.pcsrc;
+			plif_idex.btype_l  <= plif_idex.btype;
+			plif_idex.jaddr_l  <= plif_idex.jaddr;
+			plif_idex.jraddr_l <= plif_idex.jraddr;
+			plif_idex.rtnaddr_l <= plif_idex.rtnaddr;
 			//Memory
 			plif_idex.hlt_l     <= plif_idex.hlt;
 			plif_idex.dmemREN_l <= plif_idex.dmemREN;

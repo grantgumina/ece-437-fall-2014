@@ -10,9 +10,6 @@ input logic CLK, nRST,
 	always_ff @ (posedge CLK, negedge nRST) begin
 		if(~nRST || plif_exmem.sRST) begin
 			//Register File
-			plif_exmem.rd_l <= regbits_t'(0);
-			plif_exmem.rt_l <= regbits_t'(0);
-			plif_exmem.rs_l <= regbits_t'(0);
 			plif_exmem.wsel_l <= 0;
 			plif_exmem.regen_l <= 0;
 			plif_exmem.rdat2_l <= 0;
@@ -24,13 +21,18 @@ input logic CLK, nRST,
 			plif_exmem.rambusy_l <= 0;
 			//Datapath
 			plif_exmem.regsrc_l <= 0;
-			plif_exmem.hlt_l <= 0;
+			plif_exmem.hlt_l 		<= 0;
+			plif_exmem.extimm_l <= 0;
+			plif_exmem.pcsrc_l 	<= 0;
+			plif_exmem.btype_l  <= 0;
+			plif_exmem.zero_l   <= 0;
+			plif_exmem.jaddr_l  <= 0;
+			plif_exmem.jraddr_l <= 0;
+			plif_exmem.rtnaddr_l <= 0;
+		
 		end
 		else if(plif_exmem.en) begin
 			//Register File
-			plif_exmem.rd_l    <= plif_exmem.rd;
-			plif_exmem.rt_l    <= plif_exmem.rt;
-			plif_exmem.rs_l    <= plif_exmem.rs;
 			plif_exmem.wsel_l  <= plif_exmem.wsel;
 			plif_exmem.regen_l <= plif_exmem.regen;
 			plif_exmem.rdat2_l <= plif_exmem.rdat2;
@@ -41,8 +43,15 @@ input logic CLK, nRST,
 			plif_exmem.dmemWEN_l <= plif_exmem.dmemWEN;
 			plif_exmem.rambusy_l   <= plif_exmem.rambusy;
 			//Datapath
-			plif_exmem.regsrc_l <= plif_exmem.regsrc;
-			plif_exmem.hlt_l    <= plif_exmem.hlt;
+			plif_exmem.regsrc_l 	<= plif_exmem.regsrc;
+			plif_exmem.hlt_l    	<= plif_exmem.hlt;
+			plif_exmem.extimm_l 	<= plif_exmem.extimm;
+			plif_exmem.pcsrc_l 		<= plif_exmem.pcsrc;
+			plif_exmem.btype_l    <= plif_exmem.btype;
+			plif_exmem.zero_l 		<= plif_exmem.zero;
+			plif_exmem.jaddr_l    <= plif_exmem.jaddr;
+			plif_exmem.jraddr_l   <= plif_exmem.jraddr;
+		  plif_exmem.rtnaddr_l <= plif_exmem.rtnaddr;
 		end
 	end
 

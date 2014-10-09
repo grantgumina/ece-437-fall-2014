@@ -13,9 +13,10 @@ interface pipeline_ifid_if;
   logic  en;
   logic	 sRST;
   word_t instr, instr_l;
+  word_t rtnaddr, rtnaddr_l;
 
   //if -> id
-  modport ifid (input en, sRST, instr, output instr_l);
+  modport ifid (input en, sRST, instr, rtnaddr, output instr_l, rtnaddr_l);
 
 endinterface
 

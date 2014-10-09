@@ -28,6 +28,7 @@ assign itype = cuif.instr;
 always_comb begin: CULogic
     //Initialization
     //Program Counter Signals
+    cuif.btype  = 0;
     cuif.pcsrc  = 0;
     cuif.immed  = 0; cuif.jaddr  = 0; cuif.jraddr = 0;
     //ALU Signal
@@ -49,8 +50,12 @@ always_comb begin: CULogic
             cuif.rsel2  = itype.rt;
             cuif.WEN    = 0;
             //PC
-            cuif.pcsrc[0] = cuif.zflag;
-            cuif.pcsrc[1] = 0;
+            cuif.pcsrc = 1;
+            cuif.btype = 0;
+
+            // EXTENDER
+            cuif.extop = 1;
+
             //ALU
             cuif.immed  = itype.imm;
             cuif.aluop  = ALU_SUB;
@@ -62,8 +67,12 @@ always_comb begin: CULogic
             cuif.rsel2  = itype.rt;
             cuif.WEN    = 0;
             //PC
-            cuif.pcsrc[0] = ~cuif.zflag;
-            cuif.pcsrc[1] = 0;
+            cuif.pcsrc = 1;
+            cuif.btype = 1;
+
+            //EXTENDER
+            cuif.extop = 1;
+
             //ALU
             cuif.immed  = itype.imm;
             cuif.aluop  = ALU_SUB;
