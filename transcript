@@ -22,6 +22,7 @@
 # Loading work.register_file_if
 # Loading work.control_unit_if
 # Loading work.hazard_unit_if
+# Loading work.forwarding_unit_if
 # Loading work.alu_if
 # Loading work.pc_if
 # Loading work.pipeline_ifid_if
@@ -31,6 +32,7 @@
 # Loading work.register_file
 # Loading work.control_unit
 # Loading work.hazard_unit
+# Loading work.forwarding_unit
 # Loading work.alu
 # Loading work.pc
 # Loading work.pipeline_ifid
@@ -45,6 +47,6 @@
 # Loading altera_mf_ver.ALTERA_MF_MEMORY_INITIALIZATION
 # run -all 
 # Starting Processor.
-# Halted at 1680 time and ran for         83 cycles.
+# Halted at 1320 time and ran for         65 cycles.
 # Starting memory dump.
 # Finished memory dump.

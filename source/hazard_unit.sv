@@ -80,7 +80,7 @@ import cpu_types_pkg::*;
 				hzif.memwb_sRST = 0;
 				hzif.memwb_en   = 1;			
 			end
-		end
+		end 
 		
 		// CONTROL FLOW HAZARD
 		if (hzif.pcsrc_ex) begin //If a write is attempted in the EXECUTE phase

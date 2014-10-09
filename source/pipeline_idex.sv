@@ -25,6 +25,8 @@ import cpu_types_pkg::*;
 			plif_idex.jaddr_l  <= 0;
 			plif_idex.jraddr_l <= 0;
 			plif_idex.rtnaddr_l <= 0;
+			plif_idex.rsel1_l   <= 0;
+			plif_idex.rsel2_l   <= 0;
 			//Memory
 			plif_idex.hlt_l <= 0;
 			plif_idex.dmemREN_l <= 0;
@@ -47,6 +49,8 @@ import cpu_types_pkg::*;
 			plif_idex.jaddr_l  <= plif_idex.jaddr;
 			plif_idex.jraddr_l <= plif_idex.jraddr;
 			plif_idex.rtnaddr_l <= plif_idex.rtnaddr;
+			plif_idex.rsel1_l   <= plif_idex.rsel1;
+			plif_idex.rsel2_l   <= plif_idex.rsel2;
 			//Memory
 			plif_idex.hlt_l     <= plif_idex.hlt;
 			plif_idex.dmemREN_l <= plif_idex.dmemREN;

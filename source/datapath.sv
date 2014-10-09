@@ -33,11 +33,12 @@ module datapath (
   parameter PC_INIT = 0;
 
   //interfaces
-  register_file_if rfif ();
-  control_unit_if  cuif ();
-  hazard_unit_if   hzif ();
-  alu_if          aluif ();
-  pc_if            pcif ();
+  register_file_if    rfif ();
+  control_unit_if     cuif ();
+  hazard_unit_if      hzif ();
+  forwarding_unit_if  fuif ();
+  alu_if             aluif ();
+  pc_if               pcif ();
 
 
   //pipeline interfaces
@@ -51,6 +52,7 @@ module datapath (
   register_file            RF (CLK, nRST, rfif);
   control_unit             CU (cuif);
   hazard_unit              HU (CLK, nRST, hzif);
+  forwarding_unit          FU (fuif);
   alu                     ALU (aluif);
   pc                       PC (CLK, nRST, pcif); 
 
@@ -113,6 +115,8 @@ module datapath (
   assign plif_idex.jaddr   = cuif.jaddr;
   assign plif_idex.jraddr  = cuif.jraddr;
   assign plif_idex.rtnaddr = plif_ifid.rtnaddr_l;  
+  assign plif_idex.rsel1   = cuif.rsel1;
+  assign plif_idex.rsel2   = cuif.rsel2;
 
   //ex
   always_ff @ (posedge CLK, negedge nRST) begin
@@ -125,8 +129,8 @@ module datapath (
   end
 
   assign aluoperand  = plif_idex.alusrc_l ? plif_idex.extimm_l : plif_idex.rdat2_l;
-  assign aluif.porta = plif_idex.rdat1_l;
-  assign aluif.portb = aluoperand;
+  //assign aluif.porta = plif_idex.rdat1_l;
+  //assign aluif.portb = aluoperand;
   assign aluif.aluop = plif_idex.aluop_l;
 
   //ex -> mem
@@ -222,6 +226,40 @@ always_comb begin //the decider
     pcif.pcsrc = plif_memwb.pcsrc_l;
   end
 end
+
+//forwarding unit
+assign fuif.idexrs     = plif_idex.rsel1_l;
+assign fuif.idexrt     = plif_idex.rsel2_l;
+assign fuif.exmemwsel  = plif_exmem.wsel_l;
+assign fuif.memwbwsel  = plif_memwb.wsel_l;
+assign fuif.exmemregen = plif_exmem.regen_l;
+assign fuif.memwbregen = plif_memwb.regen_l;
+assign fuif.idexalusrc = plif_idex.alusrc_l;
+
+//forwarding unit muxes
+always_comb begin
+  if (fuif.fwda == 2) begin //from exmem (memory)
+    aluif.porta = plif_exmem.porto;
+  end
+  else if (fuif.fwda == 1) begin //from memwb (write back)
+    aluif.porta = wdat;
+  end
+  else begin //business as usual
+    aluif.porta = plif_idex.rdat1_l;
+  end
+end
+
+always_comb begin
+  if (fuif.fwdb == 2) begin
+    aluif.portb = plif_exmem.porto;
+  end
+  else if (fuif.fwdb == 1) begin
+    aluif.portb = wdat;
+  end
+  else begin
+    aluif.portb = aluoperand;
+  end
+end 
 
   //Unused signals
   assign dpif.datomic   = '0;

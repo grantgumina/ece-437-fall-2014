@@ -27,6 +27,9 @@ interface pipeline_idex_if;
   logic   btype, btype_l;
   word_t  rtnaddr, rtnaddr_l;
 
+  regbits_t rsel1, rsel1_l;
+  regbits_t rsel2, rsel2_l;
+
   word_t    jraddr, jraddr_l;
   logic     [ADDR_W-1:0] jaddr, jaddr_l;
   
@@ -39,8 +42,8 @@ interface pipeline_idex_if;
 
   // id -> ex
   modport idex (
-  	input  wsel,   rdat1,   rdat2,   alusrc,   aluop,   regsrc,   regen,   hlt,   dmemWEN,   dmemREN,		rambusy,   pcsrc,   extimm,   btype,   jaddr,   jraddr,   rtnaddr,  en, sRST,
-  	output wsel_l, rdat1_l, rdat2_l, alusrc_l, aluop_l, regsrc_l, regen_l, hlt_l, dmemWEN_l, dmemREN_l, rambusy_l, pcsrc_l, extimm_l, btype_l, jaddr_l, jraddr_l, rtnaddr_l
+  	input  wsel,   rdat1,   rdat2,   alusrc,   aluop,   regsrc,   regen,   hlt,   dmemWEN,   dmemREN,		rambusy,   pcsrc,   extimm,   btype,   jaddr,   jraddr,   rtnaddr,   rsel1,   rsel2,  en, sRST,
+  	output wsel_l, rdat1_l, rdat2_l, alusrc_l, aluop_l, regsrc_l, regen_l, hlt_l, dmemWEN_l, dmemREN_l, rambusy_l, pcsrc_l, extimm_l, btype_l, jaddr_l, jraddr_l, rtnaddr_l, rsel1_l, rsel2_l
   );
   
 endinterface

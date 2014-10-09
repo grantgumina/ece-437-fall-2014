@@ -4,7 +4,7 @@
 module forwarding_unit
 import cpu_types_pkg::*;
 (
-  forwarding_unit_if fuif;
+  forwarding_unit_if fuif
 );
 
   // logic for this can be found on pg 308
@@ -12,11 +12,13 @@ import cpu_types_pkg::*;
     // forward a
     if (fuif.exmemregen && 
        (fuif.exmemwsel != 0) && 
-       (fuif.exmemwsel == fuif.idexrs)) begin
+       (fuif.exmemwsel == fuif.idexrs) &&
+       (~fuif.idexalusrc)) begin
       fuif.fwda = 2'b10;
     end else if (fuif.memwbregen && 
                 (fuif.memwbwsel != 0) && 
-                (fuif.idexrs == fuif.memwbwsel)) begin
+                (fuif.idexrs == fuif.memwbwsel) &&
+                (~fuif.idexalusrc)) begin
       fuif.fwda = 2'b01;
     end else begin
       fuif.fwda = 2'b00;
@@ -26,17 +28,17 @@ import cpu_types_pkg::*;
     if (fuif.exmemregen && 
        (fuif.exmemwsel != 0) && 
        (fuif.idexrt == fuif.exmemwsel) && 
-       (fuif.alusrc == 0)) begin
+       (~fuif.idexalusrc)) begin
       fuif.fwdb = 2'b10;
     end else if (fuif.memwbregen && 
-                (memwbwsel != 0) && 
+                (fuif.memwbwsel != 0) && 
                 (fuif.idexrt == fuif.memwbwsel) && 
-                (fuif.alusrc == 0)) begin
+                (~fuif.idexalusrc)) begin
       fuif.fwdb = 2'b01;
     end else begin
       fuif.fwdb = 2'b00;
     end
-
+/*
     // forward c
     if (fuif.exmemregen && 
        (fuif.exmemwsel != 0) && 
@@ -48,6 +50,6 @@ import cpu_types_pkg::*;
       fuif.fwdc = 2'b01; 
     end else begin
       fuif.fwdc = 2'b00;
-    end
+    end */
   end
 endmodule

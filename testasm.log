@@ -1,156 +1,4 @@
 processing file asmFiles/test.branchjump1.asm (1 of 6)
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/control_unit.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface control_unit_if
--- Importing package cpu_types_pkg
--- Compiling module control_unit
-
-Top level modules:
-	control_unit
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/alu.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface alu_if
--- Importing package cpu_types_pkg
--- Compiling module alu
-
-Top level modules:
-	alu
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/pipeline_idex.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface pipeline_idex_if
--- Importing package cpu_types_pkg
--- Compiling module pipeline_idex
-
-Top level modules:
-	pipeline_idex
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/pipeline_ifid.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface pipeline_ifid_if
--- Importing package cpu_types_pkg
--- Compiling module pipeline_ifid
-
-Top level modules:
-	pipeline_ifid
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/register_file.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface register_file_if
--- Importing package cpu_types_pkg
--- Compiling module register_file
-
-Top level modules:
-	register_file
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/hazard_unit.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface hazard_unit_if
--- Importing package cpu_types_pkg
--- Compiling module hazard_unit
-
-Top level modules:
-	hazard_unit
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/pipeline_memwb.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface pipeline_memwb_if
--- Importing package cpu_types_pkg
--- Compiling module pipeline_memwb
-
-Top level modules:
-	pipeline_memwb
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/pc.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface pc_if
--- Importing package cpu_types_pkg
--- Compiling module pc
-
-Top level modules:
-	pc
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/pipeline_exmem.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface pipeline_exmem_if
--- Importing package cpu_types_pkg
--- Compiling module pipeline_exmem
-
-Top level modules:
-	pipeline_exmem
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/caches.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface datapath_cache_if
--- Importing package cpu_types_pkg
--- Compiling interface cache_control_if
--- Compiling module caches
-
-Top level modules:
-	caches
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/datapath.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface datapath_cache_if
--- Importing package cpu_types_pkg
--- Compiling interface register_file_if
--- Compiling interface control_unit_if
--- Compiling interface hazard_unit_if
--- Compiling interface alu_if
--- Compiling interface pc_if
--- Compiling interface pipeline_ifid_if
--- Compiling interface pipeline_idex_if
--- Compiling interface pipeline_exmem_if
--- Compiling interface pipeline_memwb_if
--- Compiling module datapath
-
-Top level modules:
-	datapath
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/memory_control.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface cache_control_if
--- Importing package cpu_types_pkg
--- Compiling module memory_control
-
-Top level modules:
-	memory_control
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/ram.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface cpu_ram_if
--- Importing package cpu_types_pkg
--- Compiling module ram
-
-Top level modules:
-	ram
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/pipeline.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling module pipeline
-
-Top level modules:
-	pipeline
-vlog +acc -sv12compat -mfcu -lint +incdir+include  source/system.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface system_if
--- Importing package cpu_types_pkg
--- Compiling module system
-
-Top level modules:
-	system
-vlog +acc -sv12compat -mfcu -lint +incdir+include  testbench/system_tb.sv
-Model Technology ModelSim SE-64 vlog 10.2b Compiler 2013.05 May 16 2013
--- Compiling package cpu_types_pkg
--- Compiling interface system_if
--- Importing package cpu_types_pkg
--- Compiling module system_tb
--- Compiling program test
-
-Top level modules:
-	system_tb
 Reading /mtitcl/vsim/pref.tcl 
 
 # 10.2b
@@ -179,6 +27,7 @@ Reading /mtitcl/vsim/pref.tcl
 # Loading work.register_file_if
 # Loading work.control_unit_if
 # Loading work.hazard_unit_if
+# Loading work.forwarding_unit_if
 # Loading work.alu_if
 # Loading work.pc_if
 # Loading work.pipeline_ifid_if
@@ -188,6 +37,7 @@ Reading /mtitcl/vsim/pref.tcl
 # Loading work.register_file
 # Loading work.control_unit
 # Loading work.hazard_unit
+# Loading work.forwarding_unit
 # Loading work.alu
 # Loading work.pc
 # Loading work.pipeline_ifid
@@ -235,6 +85,7 @@ Reading /mtitcl/vsim/pref.tcl
 # Loading work.register_file_if
 # Loading work.control_unit_if
 # Loading work.hazard_unit_if
+# Loading work.forwarding_unit_if
 # Loading work.alu_if
 # Loading work.pc_if
 # Loading work.pipeline_ifid_if
@@ -244,6 +95,7 @@ Reading /mtitcl/vsim/pref.tcl
 # Loading work.register_file
 # Loading work.control_unit
 # Loading work.hazard_unit
+# Loading work.forwarding_unit
 # Loading work.alu
 # Loading work.pc
 # Loading work.pipeline_ifid
@@ -291,6 +143,7 @@ Reading /mtitcl/vsim/pref.tcl
 # Loading work.register_file_if
 # Loading work.control_unit_if
 # Loading work.hazard_unit_if
+# Loading work.forwarding_unit_if
 # Loading work.alu_if
 # Loading work.pc_if
 # Loading work.pipeline_ifid_if
@@ -300,6 +153,7 @@ Reading /mtitcl/vsim/pref.tcl
 # Loading work.register_file
 # Loading work.control_unit
 # Loading work.hazard_unit
+# Loading work.forwarding_unit
 # Loading work.alu
 # Loading work.pc
 # Loading work.pipeline_ifid
@@ -347,6 +201,7 @@ Reading /mtitcl/vsim/pref.tcl
 # Loading work.register_file_if
 # Loading work.control_unit_if
 # Loading work.hazard_unit_if
+# Loading work.forwarding_unit_if
 # Loading work.alu_if
 # Loading work.pc_if
 # Loading work.pipeline_ifid_if
@@ -356,6 +211,7 @@ Reading /mtitcl/vsim/pref.tcl
 # Loading work.register_file
 # Loading work.control_unit
 # Loading work.hazard_unit
+# Loading work.forwarding_unit
 # Loading work.alu
 # Loading work.pc
 # Loading work.pipeline_ifid
@@ -403,6 +259,7 @@ Reading /mtitcl/vsim/pref.tcl
 # Loading work.register_file_if
 # Loading work.control_unit_if
 # Loading work.hazard_unit_if
+# Loading work.forwarding_unit_if
 # Loading work.alu_if
 # Loading work.pc_if
 # Loading work.pipeline_ifid_if
@@ -412,6 +269,7 @@ Reading /mtitcl/vsim/pref.tcl
 # Loading work.register_file
 # Loading work.control_unit
 # Loading work.hazard_unit
+# Loading work.forwarding_unit
 # Loading work.alu
 # Loading work.pc
 # Loading work.pipeline_ifid
@@ -459,6 +317,7 @@ Reading /mtitcl/vsim/pref.tcl
 # Loading work.register_file_if
 # Loading work.control_unit_if
 # Loading work.hazard_unit_if
+# Loading work.forwarding_unit_if
 # Loading work.alu_if
 # Loading work.pc_if
 # Loading work.pipeline_ifid_if
@@ -468,6 +327,7 @@ Reading /mtitcl/vsim/pref.tcl
 # Loading work.register_file
 # Loading work.control_unit
 # Loading work.hazard_unit
+# Loading work.forwarding_unit
 # Loading work.alu
 # Loading work.pc
 # Loading work.pipeline_ifid
@@ -486,3 +346,188 @@ Reading /mtitcl/vsim/pref.tcl
 # Starting memory dump.
 # Finished memory dump.
 27 instructions
+processing file asmFiles/mult.asm (1 of 1)
+Reading /mtitcl/vsim/pref.tcl 
+
+# 10.2b
+
+# vsim -L altera_mf_ver -L altera_ver -L cycloneii_ver -L cycloneive_ver -do {run -all; exit;} -c -wlf system_tb.wlf work.system_tb 
+# //  ModelSim SE-64 10.2b May 16 2013 Linux 2.6.32-431.29.2.el6.x86_64
+# //
+# //  Copyright 1991-2013 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# Loading sv_std.std
+# Loading work.system_tb
+# Loading work.cpu_types_pkg
+# Loading work.system_if
+# Loading work.test
+# Loading work.system
+# Loading work.cpu_ram_if
+# Loading work.pipeline
+# Loading work.datapath_cache_if
+# Loading work.cache_control_if
+# Loading work.datapath
+# Loading work.register_file_if
+# Loading work.control_unit_if
+# Loading work.hazard_unit_if
+# Loading work.forwarding_unit_if
+# Loading work.alu_if
+# Loading work.pc_if
+# Loading work.pipeline_ifid_if
+# Loading work.pipeline_idex_if
+# Loading work.pipeline_exmem_if
+# Loading work.pipeline_memwb_if
+# Loading work.register_file
+# Loading work.control_unit
+# Loading work.hazard_unit
+# Loading work.forwarding_unit
+# Loading work.alu
+# Loading work.pc
+# Loading work.pipeline_ifid
+# Loading work.pipeline_idex
+# Loading work.pipeline_exmem
+# Loading work.pipeline_memwb
+# Loading work.caches
+# Loading work.memory_control
+# Loading work.ram
+# Loading altera_mf_ver.altsyncram
+# Loading altera_mf_ver.ALTERA_DEVICE_FAMILIES
+# Loading altera_mf_ver.ALTERA_MF_MEMORY_INITIALIZATION
+# run -all 
+# Starting Processor.
+# Halted at 3120 time and ran for        155 cycles.
+# Starting memory dump.
+# Finished memory dump.
+34 instructions
+processing file asmFiles/fib.asm (1 of 1)
+Reading /mtitcl/vsim/pref.tcl 
+
+# 10.2b
+
+# vsim -L altera_mf_ver -L altera_ver -L cycloneii_ver -L cycloneive_ver -do {run -all; exit;} -c -wlf system_tb.wlf work.system_tb 
+# //  ModelSim SE-64 10.2b May 16 2013 Linux 2.6.32-431.29.2.el6.x86_64
+# //
+# //  Copyright 1991-2013 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# Loading sv_std.std
+# Loading work.system_tb
+# Loading work.cpu_types_pkg
+# Loading work.system_if
+# Loading work.test
+# Loading work.system
+# Loading work.cpu_ram_if
+# Loading work.pipeline
+# Loading work.datapath_cache_if
+# Loading work.cache_control_if
+# Loading work.datapath
+# Loading work.register_file_if
+# Loading work.control_unit_if
+# Loading work.hazard_unit_if
+# Loading work.forwarding_unit_if
+# Loading work.alu_if
+# Loading work.pc_if
+# Loading work.pipeline_ifid_if
+# Loading work.pipeline_idex_if
+# Loading work.pipeline_exmem_if
+# Loading work.pipeline_memwb_if
+# Loading work.register_file
+# Loading work.control_unit
+# Loading work.hazard_unit
+# Loading work.forwarding_unit
+# Loading work.alu
+# Loading work.pc
+# Loading work.pipeline_ifid
+# Loading work.pipeline_idex
+# Loading work.pipeline_exmem
+# Loading work.pipeline_memwb
+# Loading work.caches
+# Loading work.memory_control
+# Loading work.ram
+# Loading altera_mf_ver.altsyncram
+# Loading altera_mf_ver.ALTERA_DEVICE_FAMILIES
+# Loading altera_mf_ver.ALTERA_MF_MEMORY_INITIALIZATION
+# run -all 
+# Starting Processor.
+# Break key hit 
+# Break in Module altsyncram at /package/eda/altera/altera13.0sp1/quartus/eda/sim_lib/altera_mf.v line 45870
+# Stopped at /package/eda/altera/altera13.0sp1/quartus/eda/sim_lib/altera_mf.v line 45870 
+#  exit 
+processing file asmFiles/search.asm (1 of 1)
+Reading /mtitcl/vsim/pref.tcl 
+
+# 10.2b
+
+# vsim -L altera_mf_ver -L altera_ver -L cycloneii_ver -L cycloneive_ver -do {run -all; exit;} -c -wlf system_tb.wlf work.system_tb 
+# //  ModelSim SE-64 10.2b May 16 2013 Linux 2.6.32-431.29.2.el6.x86_64
+# //
+# //  Copyright 1991-2013 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# Loading sv_std.std
+# Loading work.system_tb
+# Loading work.cpu_types_pkg
+# Loading work.system_if
+# Loading work.test
+# Loading work.system
+# Loading work.cpu_ram_if
+# Loading work.pipeline
+# Loading work.datapath_cache_if
+# Loading work.cache_control_if
+# Loading work.datapath
+# Loading work.register_file_if
+# Loading work.control_unit_if
+# Loading work.hazard_unit_if
+# Loading work.forwarding_unit_if
+# Loading work.alu_if
+# Loading work.pc_if
+# Loading work.pipeline_ifid_if
+# Loading work.pipeline_idex_if
+# Loading work.pipeline_exmem_if
+# Loading work.pipeline_memwb_if
+# Loading work.register_file
+# Loading work.control_unit
+# Loading work.hazard_unit
+# Loading work.forwarding_unit
+# Loading work.alu
+# Loading work.pc
+# Loading work.pipeline_ifid
+# Loading work.pipeline_idex
+# Loading work.pipeline_exmem
+# Loading work.pipeline_memwb
+# Loading work.caches
+# Loading work.memory_control
+# Loading work.ram
+# Loading altera_mf_ver.altsyncram
+# Loading altera_mf_ver.ALTERA_DEVICE_FAMILIES
+# Loading altera_mf_ver.ALTERA_MF_MEMORY_INITIALIZATION
+# run -all 
+# Starting Processor.
+# Halted at 1320 time and ran for         65 cycles.
+# Starting memory dump.
+# Finished memory dump.
+278 instructions
+--- memsim.hex	2014-10-08 20:47:39.399103747 -0400
++++ memcpu.hex	2014-10-08 20:47:39.379103194 -0400
+@@ -14,7 +14,7 @@
+ :04000D001000FFF9E7
+ :04000E00AFA500009A
+ :04000F00FFFFFFFFF1
+-:0400200000000124B7
++:040020000000008C50
+ :0400210000005C6F10
+ :040022000000006476
+ :040023000000087D54

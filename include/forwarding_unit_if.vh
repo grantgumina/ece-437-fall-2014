@@ -13,13 +13,13 @@ interface forwarding_unit_if;
   logic       exmemregen;
   logic       memwbregen;
   logic       idexalusrc;
-  logic       [1:0] fwd_a;
-  logic       [1:0] fwd_b;
-  logic       [1:0] fwd_c;
+  logic       [1:0] fwda;
+  logic       [1:0] fwdb;
+  logic       [1:0] fwdc;
 
   modport forwarding_unit_if (
-    input   idexrs, idextr, exmemwsel, memwbwsel, exmemregen, memwbregen, idexalusrc,
-    output  fwd_a,  fwd_b,  fwd_c
+    input   idexrs, idexrt, exmemwsel, memwbwsel, exmemregen, memwbregen, idexalusrc,
+    output  fwda,  fwdb,  fwdc
   );
 
 endinterface
