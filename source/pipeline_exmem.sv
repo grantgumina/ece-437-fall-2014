@@ -8,7 +8,7 @@ input logic CLK, nRST,
 );
 
 	always_ff @ (posedge CLK, negedge nRST) begin
-		if(~nRST || plif_exmem.sRST) begin
+		if(~nRST) begin
 			//Register File
 			plif_exmem.wsel_l <= 0;
 			plif_exmem.regen_l <= 0;
@@ -29,9 +29,27 @@ input logic CLK, nRST,
 			plif_exmem.jaddr_l  <= 0;
 			plif_exmem.jraddr_l <= 0;
 			plif_exmem.rtnaddr_l <= 0;
-		
-		end
-		else if(plif_exmem.en) begin
+		end else if (plif_exmem.sRST) begin
+			plif_exmem.wsel_l <= 0;
+			plif_exmem.regen_l <= 0;
+			plif_exmem.rdat2_l <= 0;
+			//ALU
+			plif_exmem.porto_l <= 0;
+			//Memory
+			plif_exmem.dmemREN_l <= 0;
+			plif_exmem.dmemWEN_l <= 0;
+			plif_exmem.rambusy_l <= 0;
+			//Datapath
+			plif_exmem.regsrc_l <= 0;
+			plif_exmem.hlt_l 		<= 0;
+			plif_exmem.extimm_l <= 0;
+			plif_exmem.pcsrc_l 	<= 0;
+			plif_exmem.btype_l  <= 0;
+			plif_exmem.zero_l   <= 0;
+			plif_exmem.jaddr_l  <= 0;
+			plif_exmem.jraddr_l <= 0;
+			plif_exmem.rtnaddr_l <= 0;		
+		end else if(plif_exmem.en) begin
 			//Register File
 			plif_exmem.wsel_l  <= plif_exmem.wsel;
 			plif_exmem.regen_l <= plif_exmem.regen;

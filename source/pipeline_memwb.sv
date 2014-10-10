@@ -8,8 +8,24 @@ import cpu_types_pkg::*;
 );
 
 	always_ff @ (posedge CLK, negedge nRST) begin
-		if(~nRST || plif_memwb.sRST) begin
+		if(~nRST) begin
 			//Register
+			plif_memwb.wsel_l <= 0;
+			plif_memwb.regen_l <= 0;
+			plif_memwb.regsrc_l <= 0;
+			plif_memwb.rtnaddr_l <= 0;
+			//ALU
+			plif_memwb.porto_l <= 0;
+			//Memory
+			plif_memwb.dmemload_l <= 0;
+			//PC
+			plif_memwb.extimm_l <= 0;
+			plif_memwb.pcsrc_l 	<= 0;
+			plif_memwb.btype_l  <= 0;
+			plif_memwb.zero_l   <= 0;
+			plif_memwb.jaddr_l  <= 0;
+			plif_memwb.jraddr_l <= 0;
+		end else if (plif_memwb.sRST) begin
 			plif_memwb.wsel_l <= 0;
 			plif_memwb.regen_l <= 0;
 			plif_memwb.regsrc_l <= 0;
