@@ -113,7 +113,7 @@ module datapath (
   assign plif_idex.pcsrc   = cuif.pcsrc;
   assign plif_idex.btype   = cuif.btype;
   assign plif_idex.jaddr   = cuif.jaddr;
-  assign plif_idex.jraddr  = cuif.jraddr;
+  //assign plif_idex.jraddr  = cuif.jraddr;
   assign plif_idex.rtnaddr = plif_ifid.rtnaddr_l;  
   assign plif_idex.rsel1   = cuif.rsel1;
   assign plif_idex.rsel2   = cuif.rsel2;
@@ -150,7 +150,7 @@ module datapath (
   assign plif_exmem.btype     = plif_idex.btype_l;
   assign plif_exmem.zero      = aluif.z_flag;
   assign plif_exmem.jaddr     = plif_idex.jaddr_l;
-  assign plif_exmem.jraddr    = plif_idex.jraddr_l;
+  //assign plif_exmem.jraddr    = plif_idex.jraddr_l;
   assign plif_exmem.rtnaddr   = plif_idex.rtnaddr_l;  
   //mem
   assign dpif.dmemaddr        = plif_exmem.porto_l;
@@ -173,7 +173,7 @@ module datapath (
   assign plif_memwb.btype     = plif_exmem.btype_l;
   assign plif_memwb.zero      = plif_exmem.zero_l;
   assign plif_memwb.jaddr     = plif_exmem.jaddr_l;
-  assign plif_memwb.jraddr    = plif_exmem.jraddr_l;
+  //assign plif_memwb.jraddr    = plif_exmem.jraddr_l;
   assign plif_memwb.rtnaddr   = plif_exmem.rtnaddr_l;  
   
   // hazard unit
@@ -211,7 +211,7 @@ module datapath (
   assign pcif.pcplus4         = plif_memwb.rtnaddr_l;
   assign pcif.extimm          = plif_memwb.extimm_l;
   assign pcif.jaddr           = plif_memwb.jaddr_l;
-  assign pcif.jraddr          = plif_memwb.jraddr_l;
+  assign pcif.jraddr          = plif_memwb.porto_l;
   assign hzif.brtkn            = pcif.pcsrc ? 1:0;
 
 always_comb begin //the decider

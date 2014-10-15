@@ -405,7 +405,6 @@ always_comb begin: CULogic
                     cuif.pcsrc = 3;
                     //ALU
                     cuif.aluop  = ALU_ADD;
-                    cuif.jraddr = cuif.porto;
                 end
                 default : begin
                     cuif.alusrc    = 0;

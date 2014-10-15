@@ -1,0 +1,58 @@
+# vsim -L altera_mf_ver -L altera_ver -L cycloneii_ver -L cycloneive_ver -do {run -all; exit;} -c -wlf system_tb.wlf work.system_tb 
+# //  ModelSim SE-64 10.2b May 16 2013 Linux 2.6.32-431.29.2.el6.x86_64
+# //
+# //  Copyright 1991-2013 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# Loading sv_std.std
+# Loading work.system_tb
+# Loading work.cpu_types_pkg
+# Loading work.system_if
+# Loading work.test
+# Loading work.system
+# Loading work.ram
+# Loading work.altsyncram_1
+# Loading work.altsyncram_99f1
+# Loading work.sld_mod_ram_rom
+# Loading work.sld_rom_sr
+# Loading cycloneive_ver.cycloneive_lcell_comb
+# Loading altera_ver.dffeas
+# Loading work.altsyncram_fta2
+# Loading work.decode_jsa_1
+# Loading work.decode_jsa
+# Loading cycloneive_ver.cycloneive_ram_block
+# Loading cycloneive_ver.cycloneive_ram_register
+# Loading cycloneive_ver.cycloneive_ram_pulse_generator
+# Loading work.pipeline
+# Loading work.memory_control
+# Loading work.caches
+# Loading work.datapath
+# Loading work.pipeline_memwb
+# Loading work.pipeline_exmem
+# Loading work.pipeline_idex
+# Loading work.pipeline_ifid
+# Loading work.pc
+# Loading work.alu
+# Loading work.forwarding_unit
+# Loading work.hazard_unit
+# Loading work.control_unit
+# Loading work.register_file
+# Loading cycloneive_ver.cycloneive_jtag
+# Loading cycloneive_ver.cycloneive_io_ibuf
+# Loading cycloneive_ver.cycloneive_clkctrl
+# Loading cycloneive_ver.cycloneive_mux41
+# Loading cycloneive_ver.cycloneive_ena_reg
+# Loading cycloneive_ver.cycloneive_io_obuf
+# SDF 10.2b Compiler 2013.05 May 16 2013
+# Loading instances from mapped/system_v.sdo
+# Loading altera_ver.PRIM_GDFF_LOW
+# Loading timing data from mapped/system_v.sdo
+# run -all 
+# Starting Processor.
+# Halted at 327900 time and ran for      27324 cycles.
+# Starting memory dump.
+# Finished memory dump.
