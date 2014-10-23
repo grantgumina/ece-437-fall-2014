@@ -8,6 +8,7 @@
 
 // data path interface
 `include "datapath_cache_if.vh"
+`include "cache_control_if.vh"
 `include "register_file_if.vh"
 `include "control_unit_if.vh"
 `include "hazard_unit_if.vh"
@@ -33,6 +34,7 @@ module datapath (
   parameter PC_INIT = 0;
 
   //interfaces
+  cache_control_if    ccif ();
   register_file_if    rfif ();
   control_unit_if     cuif ();
   hazard_unit_if      hzif ();

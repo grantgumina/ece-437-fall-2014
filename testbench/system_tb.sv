@@ -18,7 +18,7 @@
 
 module system_tb;
   // clock period
-  parameter PERIOD = 12;
+  parameter PERIOD = 20;
 
   // signals
   logic CLK = 1, nRST;
@@ -71,10 +71,11 @@ program test(input logic CLK, output logic nRST, system_if.tb syif);
     // wait for halt
     while (!syif.halt)
     begin
+      $display ("not halt store: %h  addr: %h halt: %d", syif.store, syif.addr, syif.halt);
       @(posedge CLK);
       cycles++;
     end
-    $display("Halted at %g time and ran for %d cycles.",$time, cycles);
+    $display("Halted at %g time and ran for %d cycles. halt: %d",$time, cycles, syif.halt);
     nRST = 0;
     dump_memory();
     $finish;
@@ -103,7 +104,7 @@ program test(input logic CLK, output logic nRST, system_if.tb syif);
 
       syif.addr = i << 2;
       syif.REN = 1;
-      repeat (2) @(posedge CLK);
+      repeat (4) @(posedge CLK);
       if (syif.load === 0)
         continue;
       values = {8'h04,16'(i),8'h00,syif.load};
