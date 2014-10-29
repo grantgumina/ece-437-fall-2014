@@ -43,7 +43,7 @@ module system (input logic CLK, nRST, system_if.sys syif);
   end
 
   // interface
-  cpu_ram_if                            prif ();
+  cpu_ram_if prif ();
 
   // processor
 
