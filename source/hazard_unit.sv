@@ -47,7 +47,7 @@ import cpu_types_pkg::*;
 			hzif.memwb_sRST = 0; 
 			hzif.memwb_en   = 1;
 		end 
-		if (hzif.dmemWEN || hzif.dmemREN) begin
+		if ((hzif.dmemWEN || hzif.dmemREN)) begin
 			hzif.ifid_sRST  = 0;
 			hzif.ifid_en    = 0; //stalling
 			hzif.idex_sRST  = 0;
@@ -55,7 +55,7 @@ import cpu_types_pkg::*;
 			hzif.exmem_sRST = 0;
 			hzif.exmem_en   = 0; //stalling
 			hzif.memwb_sRST = 0; 
-			hzif.memwb_en   = 1;
+			hzif.memwb_en   = 0; //stalling
 			if (hzif.dhit) begin
 				hzif.ifid_sRST  = 0;
 				hzif.ifid_en    = 0; //stalling
@@ -65,6 +65,10 @@ import cpu_types_pkg::*;
 				hzif.exmem_en   = 1; //resuming
 				hzif.memwb_sRST = 0;
 				hzif.memwb_en   = 1; 
+				/*if (hzif.ihit) begin
+					hzif.ifid_en = 1;
+					hzif.idex_sRST = 0;
+				end*/
 			end
 		end
 

@@ -27,13 +27,13 @@ module icache (
   always_ff @ (posedge clk, negedge nRST) begin
     if (!nRST) begin
       for (integer i = 0; i < 16; i = i + 1) begin
-        icblks[i].valid = 0;
+        icblks[i].valid <= 0;
       end
     end else begin
       if (dcif.imemREN && !ccif.iwait[CPUID] && !dcif.ihit) begin
-        icblks[icachef.idx].value = ccif.iload[CPUID];
-        icblks[icachef.idx].tag = icachef.tag;
-        icblks[icachef.idx].valid = 1;
+        icblks[icachef.idx].value <= ccif.iload[CPUID];
+        icblks[icachef.idx].tag <= icachef.tag;
+        icblks[icachef.idx].valid <= 1;
       end
     end
   end
