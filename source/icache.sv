@@ -4,8 +4,8 @@
 
 module icache (
   input clk, nRST,
-  datapath_cache_if dcif,
-  cache_control_if ccif
+  datapath_cache_if.icache dcif,
+  cache_control_if.icache ccif
 );
 
   import cpu_types_pkg::*;
@@ -46,7 +46,7 @@ module icache (
   // output signals
   assign ccif.iREN[CPUID] = !ismatch;
   assign ccif.iaddr[CPUID] = dcif.imemaddr;
-  assign dcif.ihit = ismatch || !ccif.iwait[CPUID];
-  assign dcif.imemload = ismatch ? ccif.iload[CPUID] : selblk.value;
+  assign dcif.ihit = (ismatch || !ccif.iwait[CPUID]);
+  assign dcif.imemload = !ismatch ? ccif.iload[CPUID] : selblk.value;
 
 endmodule

@@ -28,16 +28,16 @@ module memory_control (
   assign ccif.ramstore = ccif.dstore;
 
   assign ccif.ramWEN = ccif.dWEN[CPUID];
-  assign ccif.ramREN = ccif.dREN[CPUID] ? 1 : (ccif.iREN[CPUID] & ~ccif.dWEN);
+  assign ccif.ramREN = ccif.dREN[CPUID] ? 1 : (ccif.iREN[CPUID] & ~ccif.dWEN[CPUID]);
 
 
   always_comb begin
 
     if (ccif.dWEN[CPUID] || ccif.dREN[CPUID]) begin
-      ccif.ramaddr = ccif.daddr;
+      ccif.ramaddr = ccif.daddr[CPUID];
     end
     else begin
-      ccif.ramaddr = ccif.iaddr;
+      ccif.ramaddr = ccif.iaddr[CPUID];
     end
 
     ccif.iwait[CPUID] = 1;
