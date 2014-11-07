@@ -72,7 +72,7 @@ module coherence_control (
         end
       end
 
-      C1_WRTIE: begin
+      C1_WRITE: begin
         if (coif.snoopy[0])
           nstate = C1_WRITE;
         else begin
@@ -139,7 +139,7 @@ module coherence_control (
         coif.ccsnoopaddr[0] = coif.daddr[1];
       end
 
-      C1_WRTIE: begin
+      C1_WRITE: begin
         coif.ccwait[0] = 1;
         coif.ccinv[0]  = 1;
         coif.ccsnoopaddr[0] = coif.daddr[1];
