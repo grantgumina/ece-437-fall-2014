@@ -8,7 +8,7 @@ module coherence_control (
 	import cpu_types_pkg::*;
 
 	//coherence control
-  typedef enum {IDLE, C0_WRITE, C1_WRITE, C0_READ, C1_READ} statetype;
+  typedef enum {IDLE, C0_WRITE, C1_WRITE, C0_READ, C1_READ, C0_MOD_D0, C0_MOD_D1, C1_MOD_D0, C1_MOD_D1} statetype;
   statetype state, nstate;
 
   always_ff @ (posedge CLK, negedge nRST) begin
@@ -31,7 +31,7 @@ module coherence_control (
           else
             nstate = C0_READ;
         end
-        else if (coif.cctrans[1]) begin(
+        else if (coif.cctrans[1]) begin
           if (coif.ccwrite[1]) 
             nstate = C1_WRITE;
           else
@@ -40,28 +40,76 @@ module coherence_control (
       end
 
       C0_READ: begin
-
+        if (coif.snoopy[1])
+          nstate = C0_READ;
+        else begin
+          if (coif.modded[1])
+            nstate = C0_MOD_D0;
+          else
+            nstate = IDLE;
+        end
       end
 
       C0_WRITE: begin
-        if (coif.cctrans[1])
-          nstate = IDLE;
-        else
+        if (coif.snoopy[1])
           nstate = C0_WRITE;
+        else begin
+          if (coif.modded[1])
+            nstate = C0_MOD_D0;
+          else
+            nstate = IDLE;
+        end
       end
 
       C1_READ: begin
-
+        if (coif.snoopy[0])
+          nstate = C1_READ;
+        else begin
+          if (coif.modded[0])
+            nstate = C1_MOD_D0;
+          else
+            nstate = IDLE;
+        end
       end
 
       C1_WRTIE: begin
-        if (coif.cctrans[0])
-          nstate = IDLE;
-        else
-          nstate = C0_WRITE;
+        if (coif.snoopy[0])
+          nstate = C1_WRITE;
+        else begin
+          if (coif.modded[0])
+            nstate = C1_MOD_D0;
+          else
+            nstate = IDLE;
+        end
       end
 
+      C0_MOD_D0: begin
+        if (!coif.dwait)
+          nstate = C0_MOD_D1;
+        else
+          nstate = C0_MOD_D0;
+      end
 
+      C0_MOD_D1: begin
+        if (!coif.dwait)
+          nstate = IDLE;
+        else
+          nstate = C0_MOD_D1;
+      end    
+
+      C1_MOD_D0: begin
+        if (!coif.dwait)
+          nstate = C1_MOD_D1;
+        else
+          nstate = C1_MOD_D0;
+      end
+
+      C1_MOD_D1: begin
+        if (!coif.dwait)
+          nstate = C1_MOD_D1;
+        else
+          nstate = IDLE;
+      end
 
     endcase
   end
@@ -70,29 +118,51 @@ module coherence_control (
     //initialize
     coif.ccwait = 0;
     coif.ccinv  = 0;
+    coif.dwb    = 0;
     coif.ccsnoopaddr = 0;
+
     casez(state)
 
       C0_READ: begin
         coif.ccwait[1] = 1; //begin coherence ops on C1
-        coif.ccsnoopaddr[1] = daddr[0];
+        coif.ccsnoopaddr[1] = coif.daddr[0];
       end
 
       C0_WRITE: begin
         coif.ccwait[1] = 1;
         coif.ccinv[1]  = 1;
-        coif.ccsnoopaddr[1] = daddr[0];
+        coif.ccsnoopaddr[1] = coif.daddr[0];
       end
 
       C1_READ: begin
         coif.ccwait[0] = 1;
-        coif.ccsnoopaddr[0] = daddr[1];
+        coif.ccsnoopaddr[0] = coif.daddr[1];
       end
 
       C1_WRTIE: begin
         coif.ccwait[0] = 1;
         coif.ccinv[0]  = 1;
-        coif.ccsnoopaddr[0] = daddr[1];
+        coif.ccsnoopaddr[0] = coif.daddr[1];
+      end
+
+      C0_MOD_D0: begin
+        coif.ccwait[1] = 1;
+        coif.dwb[0] = coif.dstore[1];
+      end
+
+      C0_MOD_D1: begin
+        coif.ccwait[1] = 1;
+        coif.dwb[0] = coif.dstore[1];
+      end
+
+      C1_MOD_D0: begin
+        coif.ccwait[0] = 1;
+        coif.dwb[1] = coif.dstore[0];
+      end
+
+      C1_MOD_D1: begin
+        coif.ccwait[0] = 1;
+        coif.dwb[1] = coif.dstore[0];
       end
 
     endcase

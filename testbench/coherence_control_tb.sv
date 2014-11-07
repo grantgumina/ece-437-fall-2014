@@ -48,6 +48,9 @@ program test (input logic CLK, output logic nRST, coherence_control_if.tb cotb);
 		cotb.cctrans[0] = 1;
 		cotb.daddr[0] = 32'h3100;
 		
+
+
+		
 	end
 endprogram 
 

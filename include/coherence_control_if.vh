@@ -9,20 +9,20 @@ interface coherence_control_if;
   import cpu_types_pkg::*;
 
 
-  word_t daddr;
-  logic  [CPUID-1:0]  dWEN;
-  logic  [CPUID-1:0]  cctrans, ccwrite;
-  logic  [CPUID-1:0]  ccwait, ccinv;
-  word_t [CPUID-1:0]  ccsnoopaddr;
+  word_t [CPUS-1:0]  daddr, dwb, dstore;
+  logic  [CPUS-1:0]  dWEN, snoopy, modded;
+  logic  [CPUS-1:0]  cctrans, ccwrite;
+  logic  [CPUS-1:0]  ccwait, ccinv;
+  word_t [CPUS-1:0]  ccsnoopaddr;
   
   modport co (
-    input   cctrans, ccwrite, daddr, dWEN;
-    output  ccwait, ccinv, ccsnoopaddr;
+    input   cctrans, ccwrite, daddr, dWEN, dstore, snoopy, modded,
+    output  ccwait, ccinv, ccsnoopaddr, dwb;
   );
  
   modport tb (
-    input   ccwait, ccinv, ccsnoopaddr,
-    output  cctrans, ccwrite, daddr, dWEN;
+    input   ccwait, ccinv, ccsnoopaddr, dwb,
+    output  cctrans, ccwrite, daddr, dWEN, dstore, snoopy, modded;
   );
 endinterface
 
