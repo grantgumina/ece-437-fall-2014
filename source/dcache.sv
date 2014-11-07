@@ -43,18 +43,7 @@ module dcache (
   //hit signals
   logic hit0, hit1;
   logic [1:0] hit;
-
   word_t hitcnt;
-
-
-
-
-
-  /*
-  dblk  nblk, cblk;
-  logic flushed;
-  
-*/
 
   assign dcachef = dcachef_t'(dcif.dmemaddr);
 
@@ -72,7 +61,7 @@ module dcache (
         end 
       end  
     end else begin
-      lru                                   <= nlru;
+      lru                                    <= nlru;
       if (cwen) begin
         set[setidx].blk[blkidx].valid         <= 1;
         set[setidx].blk[blkidx].dirty         <= dirty;
@@ -82,26 +71,6 @@ module dcache (
     end
   end
 
-  //assign set[setidx].blk[blkidx] = cblk;
-
-/*
-      if (cwen) begin
-      lru <= nlru;
-      set[setidx].blk[blkidx].data[dataidx] <= ccif.dload;
-    end
-*/
-
-  // check the cache for issues
-  /*
-  always_comb begin
-    dcif.flushed = dcif.halt;
-    for (integer i = 0; i < 8; i = i + 1) begin
-      for (integer j = 0; j < 2; j = j + 1) begin
-        dcif.flushed = (set[j].blk[i].dirty && set[j].blk[i].valid) ? 0 : dcif.halt;
-      end
-    end
-  end
-*/
   //tag assignment
   assign tag = dcachef.tag;
 
@@ -235,13 +204,12 @@ module dcache (
 
   // output logic
   always_comb begin
-    //nblk          = 0;
     //internal signals
     nlru          = lru;
     dirty         = 0;
     datum         = 0;
     dataidx       = 0;
-    cwen          = 0;
+    cwen          = 0; //cache write enable
     //output to mem controller
     ccif.daddr    = 0;
     ccif.dstore   = 0;
@@ -251,7 +219,7 @@ module dcache (
     dcif.dhit     = 0;
     dcif.dmemload = 0;
     dcif.flushed  = 0;
-
+    //flush counters
     ni = ci;
     nj = cj;
     
@@ -352,6 +320,7 @@ module dcache (
     end
   end
 
+  //hit counter
   always_ff @ (posedge clk, negedge nRST) begin
     if (!nRST) begin
       hitcnt <= 0;
@@ -367,7 +336,7 @@ module dcache (
   //unused signals
   assign ccif.ccwrite = 0;
   assign ccif.cctrans = 0;
-
+  
 endmodule
 
 /*

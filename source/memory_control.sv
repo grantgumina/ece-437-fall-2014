@@ -68,4 +68,35 @@ module memory_control (
     endcase
   end
 
+
+  //coherence control
+  typedef enum {IDLE, INV_CHK,} statetype;
+  statetype state, nstate;
+
+  always_ff @ (posedge CLK, negedge nRST) begin
+    if (!nRST)
+      state <= IDLE;
+
+    else
+      state <= nstate;
+  end
+
+  always_comb begin: NEXT_STATE
+    nstate = state;
+    casez(state)
+      IDLE: begin
+        if (!ccif.cctrans)
+          nstate = IDLE;
+        else if (ccif.ccwrite)
+          nstate = INV_CHK;
+    endcase
+  end
+
+  always_comb begin: OUTPUT
+
+  end
+
+
+
+
 endmodule
