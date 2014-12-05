@@ -44,6 +44,8 @@ interface control_unit_if;
   logic dWEN, dREN;
   logic halt;
 
+  opcode_t opcode;
+
   // control unit modport
   modport cu (
    //--------------------------Inputs--------------------------------------------
@@ -64,7 +66,7 @@ interface control_unit_if;
     //to Register
     WEN, wsel, rsel1, rsel2,
     //to Datapath
-    extop, alusrc, regsrc, //immed,
+    extop, alusrc, regsrc, opcode, //immed,
     //to Request Unit
     halt, dWEN, dREN
   );

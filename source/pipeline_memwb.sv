@@ -25,6 +25,8 @@ import cpu_types_pkg::*;
 			plif_memwb.zero_l   <= 0;
 			plif_memwb.jaddr_l  <= 0;
 			plif_memwb.jraddr_l <= 0;
+
+			plif_memwb.opcode_l <= opcode_t'(6'b0);
 		end else if (plif_memwb.sRST) begin
 			plif_memwb.wsel_l <= 0;
 			plif_memwb.regen_l <= 0;
@@ -58,6 +60,8 @@ import cpu_types_pkg::*;
 			plif_memwb.zero_l   <= plif_memwb.zero;
 			plif_memwb.jaddr_l  <= plif_memwb.jaddr;
 			plif_memwb.jraddr_l <= plif_memwb.jraddr;
+		
+			plif_memwb.opcode_l <= plif_memwb.opcode;
 		end
 	end
 endmodule

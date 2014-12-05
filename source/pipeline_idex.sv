@@ -27,6 +27,7 @@ import cpu_types_pkg::*;
 			plif_idex.rtnaddr_l <= 0;
 			plif_idex.rsel1_l   <= 0;
 			plif_idex.rsel2_l   <= 0;
+			plif_idex.opcode_l  <= opcode_t'(6'b0);
 			//Memory
 			plif_idex.hlt_l <= 0;
 			plif_idex.dmemREN_l <= 0;
@@ -75,6 +76,7 @@ import cpu_types_pkg::*;
 			plif_idex.rtnaddr_l <= plif_idex.rtnaddr;
 			plif_idex.rsel1_l   <= plif_idex.rsel1;
 			plif_idex.rsel2_l   <= plif_idex.rsel2;
+			plif_idex.opcode_l  <= plif_idex.opcode;
 			//Memory
 			plif_idex.hlt_l     <= plif_idex.hlt;
 			plif_idex.dmemREN_l <= plif_idex.dmemREN;

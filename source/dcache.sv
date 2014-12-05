@@ -34,7 +34,8 @@ module dcache (
   //least-recently-used array
   logic [7:0] lru, nlru;
   //block abstractions
-  logic dirty;
+  logic  valid;
+  logic  dirty;
   word_t datum;
   logic [DTAG_W-1:0] tag;
   //cache write enable
@@ -43,10 +44,19 @@ module dcache (
   //hit signals
   logic hit0, hit1;
   logic [1:0] hit;
-  word_t hitcnt;
+  //word_t hitcnt;
 
-  assign dcachef = dcachef_t'(dcif.dmemaddr);
+  typedef enum {IDLE, /*HIT_CNT,*/ TAG_CHK,
+                REFILL_0,    REFILL_1,  WRITEBACK_0, WRITEBACK_1,
+                W_ACCESS,    R_ACCESS,
+                FLUSH_SET,   FLUSH_BLK, WB_FLUSH_0,  WB_FLUSH_1,
+                CO_WAIT,     CO_INV,    CO_INV_UNC,
+                CO_RF_0,     CO_RF_1,   CO_WB_0,     CO_WB_1,
+                HALT} statetype;
 
+  statetype state, nstate, cstate, rtnstate;
+
+  assign dcachef = (ccif.ccwait[CPUID] || state == CO_INV) ? dcachef_t'(ccif.ccsnoopaddr[CPUID]) : dcachef_t'(dcif.dmemaddr);
   always_ff @ (posedge clk, negedge nRST) begin
     if (!nRST) begin
       lru <= '0;
@@ -63,7 +73,7 @@ module dcache (
     end else begin
       lru                                    <= nlru;
       if (cwen) begin
-        set[setidx].blk[blkidx].valid         <= 1;
+        set[setidx].blk[blkidx].valid         <= valid;
         set[setidx].blk[blkidx].dirty         <= dirty;
         set[setidx].blk[blkidx].tag           <= tag;
         set[setidx].blk[blkidx].data[dataidx] <= datum;
@@ -88,19 +98,38 @@ module dcache (
   //lru assignment
   //assign nlru[setidx] = (!hit) ? lru[setidx]^1 : hit[0];
 
-  typedef enum {IDLE, HIT_CNT, TAG_CHK, REFILL_0, REFILL_1, WRITEBACK_0, WRITEBACK_1, W_ACCESS, R_ACCESS, FLUSH_SET, FLUSH_BLK, WB_FLUSH_0, WB_FLUSH_1, HALT} statetype;
-  statetype state, nstate;
+
+
+  assign ccif.modded[CPUID] = hit & set[setidx].blk[blkidx].dirty;
 
   always_ff @ (posedge clk, negedge nRST) begin
     if (!nRST)
       state <= IDLE;
-    else
-      state <= nstate;
+    else begin
+      if (ccif.ccwait[CPUID]) begin
+        rtnstate <= state; ///this line is suspect
+        if (ccif.modded[CPUID])
+          state <= CO_WB_0;
+        else if (ccif.ccinv[CPUID])
+          state <= CO_INV;
+      end else
+        state <= nstate;
+    end
   end
+
+  always_comb begin
+    if (nstate == CO_WAIT || nstate == CO_INV_UNC)
+      ccif.cctrans[CPUID] = 1;
+    else
+      ccif.cctrans[CPUID] = 0;
+  end
+  assign ccif.ccwrite[CPUID] = dcif.dmemWEN;
 
   // next state logic
   always_comb begin
     nstate = state;
+    //cstate = CO_SNOOP;
+
     casez (state)
       IDLE: begin
         if (dcif.dmemWEN || dcif.dmemREN) begin
@@ -116,23 +145,28 @@ module dcache (
         if (!hit && set[setidx].blk[blkidx].dirty) begin
           nstate = WRITEBACK_0;
         end else if (!hit && !set[setidx].blk[blkidx].dirty) begin
-          nstate = REFILL_0;
+          nstate = CO_WAIT;
         end else if (hit && dcif.dmemREN) begin
           nstate = R_ACCESS;
         end else if (hit && dcif.dmemWEN) begin
-          nstate = W_ACCESS;
+          if (set[setidx].blk[blkidx].dirty)
+            nstate = W_ACCESS;
+          else
+            nstate = CO_INV_UNC;
         end else begin
           nstate = TAG_CHK;
         end
       end
+
       REFILL_0: begin
-        if (ccif.dwait)
+        if (ccif.dwait[CPUID])
           nstate = REFILL_0;
         else
           nstate = REFILL_1;
       end
+
       REFILL_1: begin
-        if (ccif.dwait) begin
+        if (ccif.dwait[CPUID]) begin
           nstate = REFILL_1;
         end else begin
           if (dcif.dmemREN)
@@ -143,21 +177,25 @@ module dcache (
             nstate = IDLE;
         end
       end
+
       WRITEBACK_0: begin
-        if (ccif.dwait)
+        if (ccif.dwait[CPUID])
           nstate = WRITEBACK_0;
         else
           nstate = WRITEBACK_1;
       end
+
       WRITEBACK_1: begin 
-        if (ccif.dwait)
+        if (ccif.dwait[CPUID])
           nstate = WRITEBACK_1;
         else
-          nstate = REFILL_0;
+          nstate = CO_WAIT;
       end
+
       W_ACCESS: begin
         nstate = IDLE;
       end
+
       R_ACCESS: begin
         nstate = IDLE;
       end
@@ -170,18 +208,18 @@ module dcache (
             nstate = FLUSH_BLK;
           end
         end else 
-          nstate = HIT_CNT;
+          nstate = HALT;
       end
 
       WB_FLUSH_0: begin
-        if (ccif.dwait)
+        if (ccif.dwait[CPUID])
           nstate = WB_FLUSH_0;
         else
           nstate = WB_FLUSH_1;
       end
 
       WB_FLUSH_1: begin
-        if (ccif.dwait)
+        if (ccif.dwait[CPUID])
           nstate = WB_FLUSH_1;
         else
           nstate = FLUSH_BLK;
@@ -191,13 +229,64 @@ module dcache (
         nstate = FLUSH_SET;
       end
 
+      //coherence states
+      CO_WB_0: begin
+        if (ccif.dwait[CPUID])
+          nstate = CO_WB_0;
+        else
+          nstate = CO_WB_1;
+      end
+
+      CO_WB_1: begin
+        if (ccif.dwait[CPUID])
+          nstate = CO_WB_1;
+        else
+          nstate = CO_INV;
+      end
+
+      CO_INV: begin
+        nstate = rtnstate;
+      end
+
+      CO_INV_UNC: begin
+        nstate = W_ACCESS;
+      end
+
+      CO_WAIT: begin
+        if (ccif.modded[!CPUID])
+          nstate = CO_RF_0;
+        else
+          nstate = REFILL_0;
+      end
+
+      CO_RF_0: begin
+        if (ccif.dwait[!CPUID])
+          nstate = CO_RF_0;
+        else
+          nstate = CO_RF_1;
+      end
+
+      CO_RF_1: begin
+        if (ccif.dwait[!CPUID]) begin
+          nstate = CO_RF_1;
+        end else begin
+          if (dcif.dmemREN)
+            nstate = R_ACCESS;
+          else if (dcif.dmemWEN)
+            nstate = W_ACCESS;
+          else
+            nstate = IDLE;
+        end
+      end
+
+/*
       HIT_CNT: begin
         if (ccif.dwait)
           nstate = HIT_CNT;
         else
           nstate = HALT;
       end
-
+*/
     endcase
   end
 
@@ -207,22 +296,27 @@ module dcache (
     //internal signals
     nlru          = lru;
     dirty         = 0;
+    valid         = 1;
     datum         = 0;
     dataidx       = 0;
     cwen          = 0; //cache write enable
     //output to mem controller
-    ccif.daddr    = 0;
-    ccif.dstore   = 0;
-    ccif.dREN     = 0;
-    ccif.dWEN     = 0;
+    ccif.daddr[CPUID]    = 0;
+    ccif.dstore[CPUID]   = 0;
+    ccif.dREN[CPUID]     = 0;
+    ccif.dWEN[CPUID]     = 0;
     //output to datapath
     dcif.dhit     = 0;
     dcif.dmemload = 0;
-    dcif.flushed  = 0;
+    dcif.flushed = 0;
     //flush counters
     ni = ci;
     nj = cj;
-    
+    //coherence
+    //ccif.cctrans[CPUID] = 0;
+    //ccif.ccwrite[CPUID] = 0;
+    //ccif.snoopy = 0;
+
     casez (state)
       
       IDLE: begin
@@ -230,33 +324,33 @@ module dcache (
 
       REFILL_0: begin
         cwen  = 1; //update cache
-        ccif.dREN = 1;
+        ccif.dREN[CPUID] = 1;
         ccif.daddr[CPUID] = {tag, setidx, 3'b000};
-        datum = ccif.dload;
+        datum = ccif.dload[CPUID];
       end
 
       REFILL_1: begin
         cwen = 1; //update cache
-        ccif.dREN = 1;
+        ccif.dREN[CPUID] = 1;
         ccif.daddr[CPUID] = {tag, setidx, 3'b100};
-        datum = ccif.dload;
+        datum = ccif.dload[CPUID];
         dataidx = 1;
       end
 
       WRITEBACK_0: begin
-        ccif.dWEN = 1;
+        ccif.dWEN[CPUID] = 1;
         ccif.daddr[CPUID] = {set[setidx].blk[blkidx].tag, setidx, 3'b000};
-        ccif.dstore = set[setidx].blk[blkidx].data[0];
+        ccif.dstore[CPUID] = set[setidx].blk[blkidx].data[0];
       end
 
       WRITEBACK_1: begin
-        ccif.dWEN = 1;
+        ccif.dWEN[CPUID] = 1;
         ccif.daddr[CPUID] = {set[setidx].blk[blkidx].tag, setidx, 3'b100};
-        ccif.dstore = set[setidx].blk[blkidx].data[1];
+        ccif.dstore[CPUID] = set[setidx].blk[blkidx].data[1];
       end
 
       R_ACCESS: begin
-        dcif.dhit     = 1;
+        dcif.dhit    = 1;
         dcif.dmemload = set[setidx].blk[blkidx].data[dcachef.blkoff];
         nlru[setidx] = hit[0];
       end
@@ -266,7 +360,7 @@ module dcache (
         cwen      = 1; //update cache
         dirty     = 1;
         dataidx   = dcachef.blkoff;
-        datum    = dcif.dmemstore; 
+        datum     = dcif.dmemstore; 
         nlru[setidx] = hit[0];
       end
       
@@ -282,24 +376,61 @@ module dcache (
       end
 
       WB_FLUSH_0: begin
-        ccif.dWEN = 1;
+        ccif.dWEN[CPUID] = 1;
         ccif.daddr[CPUID] = {set[ci].blk[cj].tag, ci[2:0], 3'b000};
-        ccif.dstore = set[ci].blk[cj].data[0];    
+        ccif.dstore[CPUID] = set[ci].blk[cj].data[0];    
       end
 
       WB_FLUSH_1: begin
-        ccif.dWEN = 1;
+        ccif.dWEN[CPUID] = 1;
         ccif.daddr[CPUID] = {set[ci].blk[cj].tag, ci[2:0], 3'b100};
-        ccif.dstore = set[ci].blk[cj].data[1];
+        ccif.dstore[CPUID] = set[ci].blk[cj].data[1];
         if (cj)
           ni = ci + 1;
       end
-
+/*
       HIT_CNT: begin
         dcif.flushed = 0;
         ccif.dWEN = 1;
         ccif.daddr[CPUID] = 32'h3100;
         ccif.dstore = hitcnt;
+      end
+*/
+
+      //coherence states
+
+      CO_WAIT: begin
+        ccif.daddr[CPUID] = dcif.dmemaddr;
+      end
+
+      CO_WB_0: begin
+        ccif.dWEN[CPUID] = 1;
+        ccif.daddr[CPUID] = {set[setidx].blk[blkidx].tag, setidx, 3'b000};
+        ccif.dstore[CPUID] = set[setidx].blk[blkidx].data[0];     
+      end
+
+      CO_WB_1: begin
+        ccif.dWEN[CPUID] = 1;
+        ccif.daddr[CPUID] = {set[setidx].blk[blkidx].tag, setidx, 3'b100};
+        ccif.dstore[CPUID] = set[setidx].blk[blkidx].data[1];
+      end
+
+      CO_INV: begin
+        cwen = 1;
+        valid = !ccif.ccinv[CPUID];
+        datum = set[setidx].blk[blkidx].data[dcachef.blkoff];
+      end
+
+      CO_RF_0: begin
+        cwen = 1;
+        datum = ccif.dwb[CPUID];
+        dataidx = 0;    
+      end
+
+      CO_RF_1: begin
+        cwen = 1;
+        datum = ccif.dwb[CPUID];
+        dataidx = 1;   
       end
 
       HALT: begin
@@ -308,6 +439,7 @@ module dcache (
 
     endcase
   end
+
 
   //flush indeces
   always_ff @ (posedge clk, negedge nRST) begin
@@ -320,6 +452,7 @@ module dcache (
     end
   end
 
+/*
   //hit counter
   always_ff @ (posedge clk, negedge nRST) begin
     if (!nRST) begin
@@ -332,10 +465,11 @@ module dcache (
       end
     end
   end
+  */
 
   //unused signals
-  assign ccif.ccwrite = 0;
-  assign ccif.cctrans = 0;
+  //assign ccif.ccwrite[CPUID] = 0;
+  //assign ccif.cctrans = 0;
   
 endmodule
 

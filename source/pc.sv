@@ -16,13 +16,15 @@ module pc(
     pc_if.pc pcif
 );
 
+parameter PC_INIT = 0;
+
 import cpu_types_pkg::*;
 
 word_t PCreg, PCregN, PCplus4; //consider that word_t might not equate to regbis_t
 
 always_ff @ (posedge CLK, negedge nRST) begin: PCRegister
     if (!nRST)
-        PCreg <= '0;
+        PCreg <= PC_INIT;
     else
         PCreg <= PCregN;
 end

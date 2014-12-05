@@ -14,12 +14,12 @@ module icache (
   typedef struct packed {
     logic valid;
     logic [ITAG_W - 1 : 0] tag;
-    logic [IIDX_W - 1 : 0] idx;
+    //logic [IIDX_W - 1 : 0] idx;
     word_t value;
   } icblk;
 
   icblk selblk;
-  word_t instr;
+  //word_t instr;
   logic ismatch;
   icblk [15:0] icblks;
   icachef_t icachef;
@@ -28,25 +28,28 @@ module icache (
     if (!nRST) begin
       for (integer i = 0; i < 16; i = i + 1) begin
         icblks[i].valid <= 0;
+        icblks[i].tag   <= 0;
+        //icblks[i].idx   <= 0;
+        icblks[i].value <= 0;
       end
     end else begin
-      if (dcif.imemREN && !ccif.iwait[CPUID] && !dcif.ihit) begin
-        icblks[icachef.idx].value <= ccif.iload[CPUID];
-        icblks[icachef.idx].tag <= icachef.tag;
+      if (dcif.imemREN && !ccif.iwait[CPUID]) begin
         icblks[icachef.idx].valid <= 1;
+        icblks[icachef.idx].tag   <= icachef.tag;
+        icblks[icachef.idx].value <= ccif.iload[CPUID];
       end
     end
   end
 
   // helper abstractions to make assign statements more readable
-  assign selblk = icblks[icachef.idx];
+  assign selblk  = icblks[icachef.idx];
   assign ismatch = selblk.valid && (selblk.tag == icachef.tag);
   assign icachef = icachef_t'(dcif.imemaddr);
 
   // output signals
-  assign ccif.iREN[CPUID] = !ismatch;
+  assign ccif.iREN[CPUID]  = !ismatch & dcif.imemREN;
   assign ccif.iaddr[CPUID] = dcif.imemaddr;
-  assign dcif.ihit = (ismatch || !ccif.iwait[CPUID]);
-  assign dcif.imemload = !ismatch ? ccif.iload[CPUID] : selblk.value;
+  assign dcif.ihit         = ismatch & dcif.imemREN;
+  assign dcif.imemload     = !ismatch ? ccif.iload[CPUID] : selblk.value;
 
 endmodule

@@ -29,6 +29,7 @@ input logic CLK, nRST,
 			plif_exmem.jaddr_l  <= 0;
 			plif_exmem.jraddr_l <= 0;
 			plif_exmem.rtnaddr_l <= 0;
+			plif_exmem.opcode_l  <= opcode_t'(6'b0);
 		end else if (plif_exmem.sRST) begin
 			plif_exmem.wsel_l <= 0;
 			plif_exmem.regen_l <= 0;
@@ -69,7 +70,8 @@ input logic CLK, nRST,
 			plif_exmem.zero_l 		<= plif_exmem.zero;
 			plif_exmem.jaddr_l    <= plif_exmem.jaddr;
 			plif_exmem.jraddr_l   <= plif_exmem.jraddr;
-		  plif_exmem.rtnaddr_l <= plif_exmem.rtnaddr;
+		    plif_exmem.rtnaddr_l <= plif_exmem.rtnaddr;
+			plif_exmem.opcode_l  <= plif_exmem.opcode;
 		end
 	end
 

@@ -22,6 +22,8 @@ interface pipeline_memwb_if;
   logic     [ADDR_W-1:0] jaddr, jaddr_l;
   word_t    rtnaddr, rtnaddr_l;
 
+  opcode_t opcode, opcode_l;
+
   //From ALU -> exmem
   word_t porto, porto_l;
   
@@ -30,8 +32,8 @@ interface pipeline_memwb_if;
 
   // mem -> wb
   modport memwb (
-  	input  wsel,    regsrc,    regen,    porto,    dmemload,   rtnaddr,   pcsrc,   extimm,   btype,   zero,   jraddr,   jaddr,  en, sRST,
-  	output wsel_l,  regsrc_l,  regen_l,  porto_l,  dmemload_l, rtnaddr_l, pcsrc_l, extimm_l, btype_l, zero_l, jraddr_l, jaddr_l
+  	input  wsel,    regsrc,    regen,    porto,    dmemload,   rtnaddr,   pcsrc,   extimm,   btype,   zero,   jraddr,   jaddr,   opcode,  en, sRST,
+  	output wsel_l,  regsrc_l,  regen_l,  porto_l,  dmemload_l, rtnaddr_l, pcsrc_l, extimm_l, btype_l, zero_l, jraddr_l, jaddr_l, opcode_l
   );
 
 endinterface

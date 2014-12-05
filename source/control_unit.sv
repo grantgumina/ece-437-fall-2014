@@ -23,6 +23,7 @@ i_t itype;
 assign rtype = cuif.instr;
 assign jtype = cuif.instr;
 assign itype = cuif.instr;
+assign cuif.opcode = itype.opcode;
 
 
 always_comb begin: CULogic

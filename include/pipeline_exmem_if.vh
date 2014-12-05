@@ -33,10 +33,12 @@ interface pipeline_exmem_if;
   logic     [ADDR_W-1:0] jaddr, jaddr_l;
   word_t    rtnaddr, rtnaddr_l;
 
+  opcode_t opcode, opcode_l;
+
   // ex -> mem
   modport exmem (
-  	input  wsel,   rdat2,   regsrc,   regen,   hlt,   dmemWEN,   dmemREN,		rambusy,   porto,   pcsrc,   extimm,   btype,   zero,   jaddr,   jraddr,   rtnaddr,  en, sRST,
-  	output wsel_l, rdat2_l, regsrc_l, regen_l, hlt_l, dmemWEN_l, dmemREN_l, rambusy_l, porto_l, pcsrc_l, extimm_l, btype_l, zero_l, jaddr_l, jraddr_l, rtnaddr_l
+  	input  wsel,   rdat2,   regsrc,   regen,   hlt,   dmemWEN,   dmemREN,		rambusy,   porto,   pcsrc,   extimm,   btype,   zero,   jaddr,   jraddr,   rtnaddr,   opcode,  en, sRST,
+  	output wsel_l, rdat2_l, regsrc_l, regen_l, hlt_l, dmemWEN_l, dmemREN_l, rambusy_l, porto_l, pcsrc_l, extimm_l, btype_l, zero_l, jaddr_l, jraddr_l, rtnaddr_l, opcode_l
   );
 
  endinterface

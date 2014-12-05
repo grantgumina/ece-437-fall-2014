@@ -56,7 +56,7 @@ module datapath (
   hazard_unit              HU (CLK, nRST, hzif);
   forwarding_unit          FU (fuif);
   alu                     ALU (aluif);
-  pc                       PC (CLK, nRST, pcif); 
+  pc #(.PC_INIT(PC_INIT))  PC (CLK, nRST, pcif); 
 
   //pipline portmaps
   pipeline_ifid          IFID (CLK, nRST, plif_ifid); //NOTE: en comes from hazard unit, which is not in datapath.sv yet
@@ -120,15 +120,19 @@ module datapath (
   assign plif_idex.rsel1   = cuif.rsel1;
   assign plif_idex.rsel2   = cuif.rsel2;
 
+  assign plif_idex.opcode  = cuif.opcode;
+
   //ex
   always_ff @ (posedge CLK, negedge nRST) begin
     if (!nRST) 
       dpif.imemREN <= 1;
     else begin
-      if (plif_idex.hlt_l) 
+      if (plif_idex.hlt_l || plif_exmem.hlt_l) 
         dpif.imemREN <= 0;
     end
   end
+
+  assign hzif.halt_mem = plif_exmem.hlt_l;
 
   assign aluoperand  = plif_idex.alusrc_l ? plif_idex.extimm_l : plif_idex.rdat2_l;
   //assign aluif.porta = plif_idex.rdat1_l;
@@ -154,6 +158,8 @@ module datapath (
   assign plif_exmem.jaddr     = plif_idex.jaddr_l;
   //assign plif_exmem.jraddr    = plif_idex.jraddr_l;
   assign plif_exmem.rtnaddr   = plif_idex.rtnaddr_l;  
+
+  assign plif_exmem.opcode    = plif_idex.opcode_l;
   //mem
   assign dpif.dmemaddr        = plif_exmem.porto_l;
   assign dpif.dmemstore       = plif_exmem.rdat2_l;
@@ -177,6 +183,8 @@ module datapath (
   assign plif_memwb.jaddr     = plif_exmem.jaddr_l;
   //assign plif_memwb.jraddr    = plif_exmem.jraddr_l;
   assign plif_memwb.rtnaddr   = plif_exmem.rtnaddr_l;  
+
+  assign plif_memwb.opcode    = plif_exmem.opcode_l;
   
   // hazard unit
   //load-use hazard
@@ -194,7 +202,7 @@ module datapath (
   assign hzif.pcsrc_mem       = plif_exmem.pcsrc_l;
   assign hzif.pcsrc_wb        = plif_memwb.pcsrc_l;
   // pc
-  assign pcif.rambusy = hzif.rambusy;
+  assign pcif.rambusy = dpif.imemREN ? hzif.rambusy : 1;
 
   //Register Source Mux
   always_comb begin

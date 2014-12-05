@@ -26,9 +26,9 @@ module caches (
   word_t instr;
 
   // icache
-  icache  ICACHE(CLK, nRST, dcif, ccif);
+  icache  #(.CPUID(CPUID))  ICACHE(CLK, nRST, dcif, ccif);
   // dcache
-  dcache  DCACHE(CLK, nRST, dcif, ccif);
+  dcache  #(.CPUID(CPUID))  DCACHE(CLK, nRST, dcif, ccif);
 
 /*
   // single cycle instr saver (for memory ops)
