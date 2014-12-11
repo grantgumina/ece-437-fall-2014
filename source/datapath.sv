@@ -132,6 +132,8 @@ module datapath (
     end
   end
 
+  assign hzif.halt_decode = cuif.halt;
+  assign hzif.halt_execute = plif_idex.hlt_l;
   assign hzif.halt_mem = plif_exmem.hlt_l;
 
   assign aluoperand  = plif_idex.alusrc_l ? plif_idex.extimm_l : plif_idex.rdat2_l;

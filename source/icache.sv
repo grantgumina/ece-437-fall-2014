@@ -47,9 +47,9 @@ module icache (
   assign icachef = icachef_t'(dcif.imemaddr);
 
   // output signals
-  assign ccif.iREN[CPUID]  = !ismatch & dcif.imemREN;
+  assign ccif.iREN[CPUID]  = !ismatch && dcif.imemREN;
   assign ccif.iaddr[CPUID] = dcif.imemaddr;
-  assign dcif.ihit         = ismatch & dcif.imemREN;
-  assign dcif.imemload     = !ismatch ? ccif.iload[CPUID] : selblk.value;
+  assign dcif.ihit         = ismatch && dcif.imemREN;
+  assign dcif.imemload     = selblk.value;
 
 endmodule
