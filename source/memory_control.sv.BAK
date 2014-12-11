@@ -1,0 +1,286 @@
+/*
+  Eric Villasenor
+  evillase@gmail.com
+  Original Author
+  
+  File name:   memory_control.sv
+  Created:     9/4/2014
+  Author:      Damaso Flores Garcia & Aharon Hannan
+  Lab Section: 437 - 03
+  Version:     1.0  Initial Design Entry
+  Description:    this block is the coherence protocol
+                  and artibtration for ram
+*/
+
+// interface include
+`include "cache_control_if.vh"
+
+// memory types
+`include "cpu_types_pkg.vh"
+
+module memory_control (
+  input logic CLK, nRST,
+  cache_control_if.cc ccif
+);
+  // type import
+  import cpu_types_pkg::*;
+
+  // number of cpus for cc
+  parameter CPUS = 1;
+  parameter CPU_ID = 0;
+
+  typedef enum bit [3:0] {IDLE, INST0, INST1, WB0, WB1, REQ_FOR_0, REQ_FOR_1, SNOOP_FOR_0, SNOOP_FOR_1, WB0_FET1, WB1_FET0, FET0, FET1} state_t;
+  state_t state, next_state;
+
+  always_ff@(posedge CLK,negedge nRST) begin
+    if(~nRST) begin
+      state <= IDLE;
+    end else begin
+      state <= next_state;
+    end
+  end
+
+  always_comb begin : nstate_logic
+    case (state)
+      IDLE: begin
+        if(ccif.cctrans[0]) begin
+          next_state = REQ_FOR_0;
+        end else if(ccif.cctrans[1]) begin
+          next_state = REQ_FOR_1;
+        end else if(ccif.dWEN[0]) begin
+          next_state = WB0;
+        end else if(ccif.dWEN[1]) begin
+          next_state = WB1;
+        end else if(ccif.iREN[0]) begin
+          next_state = INST0;
+        end else if(ccif.iREN[1]) begin
+          next_state = INST1;
+        end else begin 
+          next_state = IDLE;
+        end
+      end
+      INST0: begin
+        if(ccif.ramstate == ACCESS) begin
+          next_state = IDLE;          
+        end else begin
+          next_state = INST0;
+        end
+      end
+      INST1: begin
+        if(ccif.ramstate == ACCESS) begin
+          next_state = IDLE;
+        end else begin
+          next_state = INST1;
+        end
+      end
+      WB0: begin
+        if(~ccif.dWEN[0]) begin
+          next_state = IDLE;
+        end else begin
+          next_state = WB0;
+        end
+      end
+      WB1: begin
+        if(~ccif.dWEN[1]) begin
+          next_state = IDLE;
+        end else begin
+          next_state = WB1;
+        end
+      end
+      REQ_FOR_0:begin
+        next_state = SNOOP_FOR_0;
+      end
+      SNOOP_FOR_0: begin
+        if(ccif.dWEN[1]) begin
+          next_state = WB1_FET0;
+        end else begin
+          next_state = FET0;
+        end
+      end
+      WB1_FET0: begin
+        if(~ccif.dWEN[1]) begin
+          next_state = IDLE;
+        end else begin
+          next_state = WB1_FET0;
+        end
+      end
+      FET0: begin
+        if(~ccif.dREN[0]) begin
+          next_state = IDLE;
+        end else begin
+          next_state = FET0;
+        end
+      end
+      REQ_FOR_1:begin
+        next_state = SNOOP_FOR_1;
+      end
+      SNOOP_FOR_1: begin
+        if(ccif.dWEN[0]) begin
+          next_state = WB0_FET1;
+        end else begin
+          next_state = FET1;
+        end
+      end
+      WB0_FET1: begin
+        if(~ccif.dWEN[0]) begin
+          next_state = IDLE;
+        end else begin
+          next_state = WB0_FET1;
+        end
+      end
+      FET1: begin
+        if(~ccif.dREN[1]) begin
+          next_state = IDLE;
+        end else begin
+          next_state = FET1;
+        end
+      end
+      default : next_state = IDLE;
+    endcase
+  end
+
+  always_comb begin : output_logic
+    ccif.ramaddr = '0;
+    ccif.ramstore = '0;
+    ccif.ramWEN = 0;
+    ccif.ramREN = 0;
+    ccif.iwait = 2'b11;
+    ccif.dwait = 2'b11;
+    ccif.iload = '0;
+    ccif.dload = '0;
+    ccif.ccwait = '0;
+    ccif.ccinv = '0;
+    ccif.ccsnoopaddr = '0;
+    case (state)
+      IDLE: begin
+      end
+      INST0: begin
+        ccif.ramaddr = ccif.iaddr[0];
+        ccif.ramREN = 1;
+        ccif.iload[0] = ccif.ramload;
+        ccif.iwait[0] = ~(ccif.ramstate == ACCESS);
+      end
+      INST1: begin
+        ccif.ramaddr = ccif.iaddr[1];
+        ccif.ramREN = 1;
+        ccif.iload[1] = ccif.ramload;
+        ccif.iwait[1] = ~(ccif.ramstate == ACCESS);
+      end
+      WB0: begin
+        ccif.ramWEN = ccif.dWEN[0];
+        ccif.ramaddr = ccif.daddr[0];
+        ccif.ramstore = ccif.dstore[0];
+        ccif.dwait[0] = ~(ccif.ramstate == ACCESS);
+      end
+      WB1: begin
+        ccif.ramWEN = ccif.dWEN[1];
+        ccif.ramaddr = ccif.daddr[1];
+        ccif.ramstore = ccif.dstore[1];
+        ccif.dwait[1] = ~(ccif.ramstate == ACCESS);
+      end
+      REQ_FOR_0: begin
+        ccif.ccwait[1] = 1;
+      end
+      SNOOP_FOR_0: begin
+        ccif.ccsnoopaddr[1] = ccif.daddr[0];
+      end
+      WB1_FET0: begin
+        ccif.ccsnoopaddr[1] = ccif.daddr[0];
+        // write back block from cache 1
+        ccif.ramWEN = ccif.dWEN[1];
+        ccif.ramaddr = ccif.daddr[1];
+        ccif.ramstore = ccif.dstore[1];
+        ccif.dwait[1] = ~(ccif.ramstate == ACCESS);
+        // pass data from cache 1 to cache 0
+        ccif.dload[0] = ccif.dstore[1];
+        ccif.dwait[0] = ~(ccif.ramstate == ACCESS);
+        // invalidate
+        ccif.ccinv[1] = ccif.ccwrite[0];
+      end
+      FET0: begin
+        // fetch data for cache 0;
+        ccif.ramREN = 1;
+        ccif.ramaddr = ccif.daddr[0];
+        ccif.dload[0] = ccif.ramload;
+        ccif.dwait[0] = ~(ccif.ramstate == ACCESS);
+        // invalidate
+        // ccif.ccinv[1] = ccif.ccwrite[0];
+      end
+      REQ_FOR_1: begin
+        ccif.ccwait[0] = 1;
+      end
+      SNOOP_FOR_1: begin
+        ccif.ccsnoopaddr[0] = ccif.daddr[1];
+      end
+      WB0_FET1: begin
+        ccif.ccsnoopaddr[0] = ccif.daddr[1];
+        // write back block from cache 0
+        ccif.ramWEN = ccif.dWEN[0];
+        ccif.ramaddr = ccif.daddr[0];
+        ccif.ramstore = ccif.dstore[0];
+        ccif.dwait[0] = ~(ccif.ramstate == ACCESS);
+        // pass data from cache 0 to cache 1
+        ccif.dload[1] = ccif.dstore[0];
+        ccif.dwait[1] = ~(ccif.ramstate == ACCESS);
+        // invalidate
+        ccif.ccinv[0] = ccif.ccwrite[1];
+      end
+      FET1: begin
+        // fetch data for cache 1;
+        ccif.ramREN = 1;
+        ccif.ramaddr = ccif.daddr[1];
+        ccif.dload[1] = ccif.ramload;
+        ccif.dwait[1] = ~(ccif.ramstate == ACCESS);
+        // invalidate
+        // ccif.ccinv[0] = ccif.ccwrite[1];
+      end
+      // default: begin
+      //   ccif.ramaddr = '0;
+      //   ccif.ramstore = '0;
+      //   ccif.ramWEN = 0;
+      //   ccif.ramREN = 0;
+      //   ccif.iwait = 2'b11;
+      //   ccif.dwait = 2'b11;
+      //   ccif.iload = '0;
+      //   ccif.dload = '0;
+      //   ccif.ccwait = '0;
+      //   ccif.ccinv = '0;
+      //   ccif.ccsnoopaddr = '0;
+      // end
+    endcase
+  end
+
+endmodule
+  // logic [2:0]casevar;
+
+  // assign ccif.iload = ccif.ramload;
+  // assign ccif.dload = ccif.ramload;
+  // assign ccif.ramstore = ccif.dstore;
+
+  // assign casevar = {ccif.dWEN[CPU_ID],ccif.dREN[CPU_ID],ccif.iREN[CPU_ID]};
+
+  // always_comb begin : proc_comb
+  //   ccif.ramREN = 0;
+  //   ccif.ramWEN = 0;
+  //   ccif.ramaddr = 0;
+  //   ccif.iwait[CPU_ID] = 1;
+  //   ccif.dwait[CPU_ID] = 1;
+
+  //   casez (casevar)
+  //     3'b1zz: begin
+  //       ccif.ramWEN = ccif.dWEN[CPU_ID];
+  //       ccif.ramaddr = ccif.daddr;
+  //       ccif.dwait[CPU_ID] = ~(ccif.ramstate == ACCESS);
+  //     end
+  //     3'b01z: begin
+  //       ccif.ramREN = ccif.dREN[CPU_ID];
+  //       ccif.ramaddr = ccif.daddr;
+  //       ccif.dwait[CPU_ID] = ~(ccif.ramstate == ACCESS);
+  //     end
+  //     3'b001: begin
+  //       ccif.ramREN = ccif.iREN[CPU_ID];
+  //       ccif.ramaddr = ccif.iaddr;
+  //       ccif.iwait[CPU_ID] = ~(ccif.ramstate == ACCESS);
+  //     end
+  //   endcase
+  // end

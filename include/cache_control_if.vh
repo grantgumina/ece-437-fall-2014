@@ -37,6 +37,8 @@ interface cache_control_if;
   logic   [CPUS-1:0]      ccwrite, cctrans;
   word_t  [CPUS-1:0]      ccsnoopaddr;
 
+  logic   [CPUS-1:0]      imhalting;
+
   // ram side
   logic                   ramWEN, ramREN;
   ramstate_t              ramstate;
@@ -51,7 +53,7 @@ interface cache_control_if;
             // cache inputs
     input   iREN, dREN, dWEN, dstore, iaddr, daddr,
             // ram inputs
-            ramload, ramstate,
+            ramload, ramstate, imhalting,
             // coherence inputs from cache
             ccwrite, cctrans, modded,
             // cache outputs
@@ -75,7 +77,7 @@ interface cache_control_if;
             dwb, //new signals
     output  dREN, dWEN, daddr, dstore,
             ccwrite, cctrans,
-            modded //new signals
+            modded, imhalting //new signals
   );
   modport caches (
     input   iwait, iload, dwait, dload,

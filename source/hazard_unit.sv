@@ -22,7 +22,8 @@ import cpu_types_pkg::*;
 	input CLK, nRST,
 	hazard_unit_if hzif
 );
-	assign hzif.rambusy = ~hzif.ifid_en || (hzif.dmemWEN || hzif.dmemREN) || !hzif.ihit;
+	assign hzif.rambusy = ~hzif.ifid_en || ((hzif.dmemWEN || hzif.dmemREN) && !hzif.ihit);
+	//assign hzif.rambusy = ~hzif.ifid_en || hzif.dmemWEN || hzif.dmemREN || !hzif.ihit;
 
 	always_comb begin
 		hzif.ifid_sRST  = 0;
@@ -35,7 +36,6 @@ import cpu_types_pkg::*;
 		hzif.memwb_en   = 1;
 		
 		//MEMORY HAZARD CONTROL
-
 		if ((hzif.dREN_ex) && //if lw in execute phase and write reg equals either source reg in decode
 			(hzif.wsel_ex == hzif.rsel1_id || hzif.wsel_ex == hzif.rsel2_id)) begin
 			hzif.ifid_sRST  = 0;
@@ -86,7 +86,8 @@ import cpu_types_pkg::*;
 				hzif.memwb_sRST = 0;
 				hzif.memwb_en   = 1;			
 			end
-		end */
+		end 
+		*/
 		
 		// CONTROL FLOW HAZARD
 		if (hzif.pcsrc_ex) begin //If a branch is attempted in the EXECUTE phase
@@ -130,28 +131,28 @@ import cpu_types_pkg::*;
 			hzif.memwb_en   = 1;
 		end 		
 		if ((hzif.dmemWEN || hzif.dmemREN)) begin
-			hzif.ifid_sRST  = 0;
-			hzif.ifid_en    = 0; //stalling
-			hzif.idex_sRST  = 0;
-			hzif.idex_en    = 0; //stalling
-			hzif.exmem_sRST = 0;
-			hzif.exmem_en   = 0; //stalling
-			hzif.memwb_sRST = 0; 
-			hzif.memwb_en   = 0; //stalling
+				hzif.ifid_sRST  = 0;
+				hzif.ifid_en    = 0; //stalling
+				hzif.idex_sRST  = 0;
+				hzif.idex_en    = 0; //stalling
+				hzif.exmem_sRST = 0;
+				hzif.exmem_en   = 0; //stalling
+				hzif.memwb_sRST = 0; 
+				hzif.memwb_en   = 0; //not stalling
 			if (hzif.dhit) begin //the behavior here is suspect
 				hzif.ifid_sRST  = 0;
 				hzif.ifid_en    = 0; //stalling
-				hzif.idex_sRST  = 1; //nopping
-				hzif.idex_en    = 0; 
-				hzif.exmem_sRST = 0;
-				hzif.exmem_en   = 1; //resuming 
+				hzif.idex_sRST  = 1; //flushing 
+				hzif.idex_en    = 0; //stalling 
+				hzif.exmem_sRST = 0; //flushing
+				hzif.exmem_en   = 1; 
 				hzif.memwb_sRST = 0;
 				hzif.memwb_en   = 1; //resuming
+			end
+		end
 				/*if (hzif.ihit) begin
 					hzif.ifid_en = 1;
 					hzif.idex_sRST = 0;
 				end*/
-			end
-		end
 	end
 endmodule
